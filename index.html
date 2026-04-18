@@ -10,124 +10,142 @@
 <title>Flashcards</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0a0a0a;--s:#141414;--b:#222;--t:#f0f0f0;--m:#888;--mm:#555;--g:#4ade80;--p:#818cf8;--y:#fbbf24}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
-.screen{display:none;flex-direction:column;min-height:100vh}
-.screen.on{display:flex}
+:root{--bg:#0a0a0a;--s:#141414;--b:#1e1e1e;--t:#f0f0f0;--m:#666;--mm:#333;--g:#4ade80;--p:#818cf8;--y:#fbbf24;--r:#f87171}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+.screen{display:none;flex-direction:column;min-height:100vh}.screen.on{display:flex}
 
-/* HOME */
-.hh{padding:48px 22px 12px;padding-top:calc(env(safe-area-inset-top,0px)+48px)}
-.ht{font-size:28px;font-weight:700;letter-spacing:-0.5px}
-.hs{font-size:14px;color:var(--m);margin-top:4px}
-.voice-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.vbtn{padding:9px 16px;border-radius:99px;border:1px solid var(--b);background:var(--s);color:var(--m);font-size:14px;font-family:inherit;cursor:pointer;transition:all .15s}
-.vbtn.on{background:#0d2010;color:var(--g);border-color:#2a4a2a;font-weight:600}
-.settings-link{margin-top:10px;font-size:12px;color:var(--mm);cursor:pointer;display:inline-block}
-.settings-link:active{color:var(--m)}
-.dl{flex:1;padding:8px 16px 40px;overflow-y:auto}
-.di{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--s);border:1px solid var(--b);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:background .15s}
-.di:active{background:#1e1e1e}
+.hh{padding:52px 20px 12px;padding-top:calc(env(safe-area-inset-top,0px)+52px)}
+.ht{font-size:26px;font-weight:700;letter-spacing:-0.4px}
+.hs{font-size:13px;color:var(--m);margin-top:3px}
+
+/* Voice status cards */
+.voice-status{display:flex;flex-direction:column;gap:7px;margin:12px 0 0}
+.vs-card{display:flex;align-items:center;gap:9px;padding:10px 13px;background:var(--s);border:1px solid var(--b);border-radius:11px}
+.vs-flag{font-size:16px;flex-shrink:0}
+.vs-info{flex:1}
+.vs-name{font-size:13px;font-weight:500;color:var(--t)}
+.vs-status{font-size:11px;color:var(--m);margin-top:1px}
+.vs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.vs-dot.g{background:var(--g)}.vs-dot.y{background:var(--y)}.vs-dot.r{background:var(--r)}
+
+.voice-row{display:flex;gap:7px;margin-top:10px}
+.vbtn{padding:8px 16px;border-radius:99px;border:1px solid var(--b);background:var(--s);color:var(--m);font-size:13px;font-family:inherit;cursor:pointer;transition:all .15s}
+.vbtn.on{background:#0d2010;color:var(--g);border-color:#1f4020;font-weight:600}
+
+.deck-scroll{flex:1;overflow-y:auto;padding:8px 16px 120px}
+.sec-lbl-home{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--m);margin:16px 0 8px 2px}
+.di{display:flex;align-items:center;gap:12px;padding:13px;background:var(--s);border:1px solid var(--b);border-radius:13px;margin-bottom:7px;cursor:pointer;transition:background .12s,border-color .12s;user-select:none}
+.di:active{background:#1c1c1c}
+.di.sel{background:#0d1a0d;border-color:#2a4a2a}
 .di.empty{opacity:0.3;cursor:default;pointer-events:none}
-.dl-left{display:flex;align-items:center;gap:12px}
-.di-icon{font-size:22px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#1a1a1a;border-radius:10px}
-.di-name{font-size:15px;font-weight:500}
-.di-count{font-size:12px;color:var(--m);margin-top:1px}
-.di-arr{color:var(--m);font-size:20px}
+.di-icon{font-size:20px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:#1a1a1a;border-radius:9px;flex-shrink:0}
+.di-info{flex:1}.di-name{font-size:15px;font-weight:500}.di-count{font-size:12px;color:var(--m);margin-top:1px}
+.di-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--b);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.di.sel .di-check{background:var(--g);border-color:var(--g)}
+.di-check-inner{display:none}
+.di.sel .di-check-inner{display:block;width:6px;height:10px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg);margin-top:-2px}
 
-/* SETTINGS */
-.sh{display:flex;align-items:center;gap:10px;padding:14px 20px;padding-top:calc(env(safe-area-inset-top,0px)+14px);border-bottom:1px solid var(--b)}
+.go-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+12px);background:rgba(10,10,10,0.97);border-top:1px solid var(--b);backdrop-filter:blur(12px);display:flex;gap:10px;align-items:center;transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.go-bar.vis{transform:translateY(0)}
+.go-info{flex:1;font-size:13px;color:var(--m)}.go-info strong{color:var(--t)}
+.go-clear{padding:13px 14px;background:var(--s);color:var(--m);border:1px solid var(--b);border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer}
+.go-btn{padding:13px 28px;background:var(--g);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.go-btn:active{opacity:.85}
+
+/* Loading overlay */
+.overlay{position:fixed;inset:0;background:rgba(10,10,10,0.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;backdrop-filter:blur(10px);text-align:center;padding:32px}
+.overlay.on{display:flex}
+.spinner{width:36px;height:36px;border:3px solid var(--b);border-top-color:var(--g);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ov-title{font-size:16px;font-weight:600}
+.ov-sub{font-size:13px;color:var(--m);line-height:1.6;max-width:280px}
+.ov-prog{font-size:12px;color:var(--mm)}
+
+/* Player */
+.ph{display:flex;align-items:center;padding:12px 18px;padding-top:calc(env(safe-area-inset-top,0px)+12px);border-bottom:1px solid var(--b);gap:8px}
 .bk{background:none;border:none;color:var(--m);font-size:15px;cursor:pointer;font-family:inherit;padding:4px 0}
-.sbody{padding:20px 18px;display:flex;flex-direction:column;gap:22px;flex:1;overflow-y:auto}
-.fl{font-size:12px;color:var(--m);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
-.fi{width:100%;padding:14px;background:var(--s);border:1px solid var(--b);border-radius:12px;color:var(--t);font-size:15px;font-family:inherit;outline:none}
-.fi:focus{border-color:#444}
-.fh{font-size:12px;color:var(--m);margin-top:8px;line-height:1.6}
-.fh a{color:var(--g);text-decoration:none}
-.sb{padding:15px;background:#fff;color:#000;border:none;border-radius:13px;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;width:100%}
-.info-box{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px;font-size:13px;color:var(--m);line-height:1.6}
-.info-box strong{color:var(--t)}
-
-/* PLAYER */
-.ph{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;padding-top:calc(env(safe-area-inset-top,0px)+12px);border-bottom:1px solid var(--b);gap:10px}
-.pt{font-size:13px;font-weight:600;flex:1;text-align:center}
-.pp{font-size:12px;color:var(--m)}
-
-/* Card display - SCROLLABLE with full text */
-.ca{flex:1;overflow-y:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
-.badge{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:99px;align-self:flex-start;flex-shrink:0}
+.pt{flex:1;text-align:center;font-size:13px;font-weight:600}
+.pp{font-size:12px;color:var(--m);flex-shrink:0}
+.ca{flex:1;overflow-y:auto;padding:16px 18px 20px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+.badge{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:99px;align-self:flex-start;margin-bottom:13px;flex-shrink:0}
 .bq{background:#0d2010;color:var(--g);border:1px solid #1a3a20}
 .ba{background:#0d0d20;color:var(--p);border:1px solid #1a1a3a}
 .bp{background:var(--s);color:var(--m);border:1px solid var(--b)}
-.section{padding-bottom:10px;border-bottom:1px solid var(--b)}
-.section:last-child{border-bottom:none}
-.section-label{font-size:10px;color:var(--mm);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-weight:600;transition:color 0.2s}
-.section-label.active{color:var(--y)}
-.section-text{font-size:15px;line-height:1.65;color:var(--t);transition:opacity 0.3s}
-.section-text.dim{opacity:0.4}
-.section-text.essens{font-weight:600;font-size:16px}
-.section-text.ctx,.section-text.src{color:var(--m);font-size:13px;font-style:italic}
-.section-text.refleksion,.section-text.svar{color:var(--p);font-style:italic;font-size:14px}
-
-.speak-bar{padding:10px 20px;background:#0d1410;border-top:1px solid #1a3a20;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--g);min-height:40px}
+.sec{padding:9px 0;border-bottom:1px solid #161616}.sec:last-child{border-bottom:none}
+.sec-lbl{font-size:10px;color:var(--mm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:600;transition:color .2s}
+.sec-lbl.act{color:var(--y)}
+.sec-txt{font-size:15px;line-height:1.72;color:var(--t)}
+.sec-txt.ctx,.sec-txt.src{color:var(--m);font-size:13px;font-style:italic}
+.sec-txt.essens{font-weight:600;font-size:16px;color:#fff}
+.sec-txt.ref,.sec-txt.svar{color:var(--p);font-size:14px;line-height:1.65}
+.idle{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:11px;text-align:center;padding:40px 22px}
+.idle-icon{font-size:44px}.idle-t{font-size:19px;font-weight:600}
+.idle-s{font-size:13px;color:var(--m);line-height:1.65;max-width:280px}
+.idle-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.chip{font-size:11px;padding:4px 10px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)}
+.chip.ai{color:var(--g);border-color:#2a4a2a;background:#0d2010}
+.spkbar{padding:9px 18px;background:#0a150a;border-top:1px solid #1a3a1a;display:flex;align-items:center;gap:10px;min-height:37px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:pu 1.4s infinite;flex-shrink:0}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.2}}
-.bar-wrap{flex:1;height:2px;background:#1a3a20;border-radius:2px;overflow:hidden}
-.bar{height:100%;background:var(--g);width:0%;transition:width linear}
-
-.ctrl{padding:12px 18px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+16px);border-top:1px solid var(--b);display:flex;gap:8px;align-items:center;justify-content:center}
-.btn{border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-weight:600;transition:transform .1s,opacity .1s}
+.spklbl{font-size:12px;color:var(--g);flex:1}
+.barw{width:70px;height:2px;background:#1a3a1a;border-radius:2px;overflow:hidden}
+.barf{height:100%;background:var(--g);width:0%;transition:width linear}
+.ctrl{padding:11px 18px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+15px);border-top:1px solid var(--b);display:flex;gap:8px;align-items:center;justify-content:center}
+.btn{border:none;border-radius:11px;cursor:pointer;font-family:inherit;font-weight:600;transition:transform .1s,opacity .1s}
 .btn:active{transform:scale(.96);opacity:.8}
-.bp2{background:#fff;color:#000;font-size:15px;padding:13px 0;flex:1;max-width:180px}
-.bs{background:var(--s);color:var(--m);font-size:13px;padding:13px 14px;border:1px solid var(--b)}
-.idle{display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 20px;text-align:center}
-.ii{font-size:44px}
-.it{font-size:19px;font-weight:600}
-.is{font-size:13px;color:var(--m);line-height:1.6;max-width:280px}
-.voice-chip{font-size:11px;padding:4px 10px;border-radius:99px;border:1px solid var(--b);color:var(--m);background:var(--s);display:inline-block;align-self:center;margin-top:6px}
-.voice-chip.ai{color:var(--g);background:#0d2010;border-color:#2a4a2a}
-@media(min-width:600px){.dl,.hh,.sbody,.ca{max-width:600px;margin-left:auto;margin-right:auto}}
+.btnmain{background:#fff;color:#000;font-size:15px;padding:13px 0;flex:1;max-width:175px}
+.btnsec{background:var(--s);color:var(--m);font-size:13px;padding:13px 13px;border:1px solid var(--b)}
+@media(min-width:600px){.deck-scroll,.hh{max-width:580px;margin-left:auto;margin-right:auto}.ca{max-width:600px;margin-left:auto;margin-right:auto}}
 </style>
 </head>
 <body>
+
+<!-- LOADING OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="ov-title" id="ovTitle">Indlæser AI-stemmer</div>
+  <div class="ov-sub" id="ovSub">Første gang downloades stemmerne og caches offline for altid</div>
+  <div class="ov-prog" id="ovProg"></div>
+</div>
 
 <!-- HOME -->
 <div class="screen on" id="home">
   <div class="hh">
     <div class="ht">Flashcards</div>
-    <div class="hs">Vælg deck · tilfældig rækkefølge · al tekst oplæses og vises</div>
+    <div class="hs">Vælg et eller flere decks og tryk Afspil</div>
+    <div class="voice-status">
+      <div class="vs-card">
+        <span class="vs-flag">🇩🇰</span>
+        <div class="vs-info">
+          <div class="vs-name">Meta MMS-TTS Dansk</div>
+          <div class="vs-status" id="daStatus">Indlæser...</div>
+        </div>
+        <div class="vs-dot y" id="daDot"></div>
+      </div>
+      <div class="vs-card">
+        <span class="vs-flag">🇬🇧</span>
+        <div class="vs-info">
+          <div class="vs-name">Kokoro AI English</div>
+          <div class="vs-status" id="enStatus">Indlæser...</div>
+        </div>
+        <div class="vs-dot y" id="enDot"></div>
+      </div>
+    </div>
     <div class="voice-row">
       <button class="vbtn on" id="vDA" onclick="setLang('da')">🇩🇰 Dansk</button>
       <button class="vbtn" id="vEN" onclick="setLang('en')">🇬🇧 English</button>
     </div>
-    <div class="settings-link" onclick="showSettings()">⚙ Stemmeindstillinger — aktivér naturlig AI-stemme</div>
   </div>
-  <div class="dl" id="deckList"></div>
-</div>
-
-<!-- SETTINGS -->
-<div class="screen" id="settings">
-  <div class="sh">
-    <button class="bk" onclick="hideSettings()">← Tilbage</button>
-    <span style="flex:1;text-align:center;font-weight:600">Stemmeindstillinger</span>
-    <span style="width:50px"></span>
+  <div class="deck-scroll">
+    <div class="sec-lbl-home">⭐ Skills 2026</div>
+    <div id="skills2026"></div>
+    <div class="sec-lbl-home" style="margin-top:20px">🎓 UNI</div>
+    <div id="uniDecks"></div>
   </div>
-  <div class="sbody">
-    <div class="info-box">
-      <strong style="color:var(--y)">⚠ Om stemmekvalitet</strong><br><br>
-      Uden AI-nøgle bruger appen telefonens indbyggede TTS, som lyder mekanisk.<br><br>
-      <strong>Gratis forbedring på iPhone:</strong><br>
-      Indstillinger → Tilgængelighed → Oplæst indhold → Stemmer → vælg sprog → download "Premium" eller "Enhanced" stemme.<br><br>
-      <strong>Bedste løsning:</strong> ElevenLabs AI-stemme (naturlig, gratis 10.000 tegn/md):
-    </div>
-    <div>
-      <div class="fl">ElevenLabs API-nøgle</div>
-      <input class="fi" id="keyInput" type="password" placeholder="sk_..." autocomplete="off" spellcheck="false">
-      <div class="fh">
-        <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank">→ Hent gratis API-nøgle på elevenlabs.io</a><br>
-        Nøglen gemmes lokalt i browseren. Internet kræves første gang hvert kort afspilles.
-      </div>
-    </div>
-    <button class="sb" onclick="saveKey()">Gem</button>
+  <div class="go-bar" id="goBar">
+    <div class="go-info" id="goInfo"><strong>0 decks</strong> valgt</div>
+    <button class="go-clear" onclick="clearSel()">Ryd</button>
+    <button class="go-btn" onclick="startSel()">▶ Afspil</button>
   </div>
 </div>
 
@@ -136,104 +154,183 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="ph">
     <button class="bk" onclick="goHome()">← Decks</button>
     <span class="pt" id="ptitle"></span>
-    <span class="pp" id="pprog">1/1</span>
+    <span class="pp" id="pprog">0/0</span>
   </div>
-
   <div class="ca" id="cardArea">
-    <div class="idle" id="idleView">
-      <div class="ii" id="idleIcon">📚</div>
-      <div class="it" id="idleTitle">Klar</div>
-      <div class="is">Tryk Afspil — al tekst vises og oplæses i tilfældig rækkefølge</div>
-      <div class="voice-chip" id="voiceChip">Browser TTS</div>
+    <div class="idle" id="idleArea">
+      <div class="idle-icon">▶</div>
+      <div class="idle-t">Klar</div>
+      <div class="idle-s">Tryk Afspil — hvert kort vises og oplæses fuldt ud</div>
+      <div class="idle-chips" id="idleChips"></div>
+      <div class="chip" id="voiceChip">Indlæser stemmer...</div>
     </div>
-
     <div id="cardView" style="display:none">
-      <div class="badge bq" id="badge">Spørgsmål</div>
-
-      <div class="section" id="secQ">
-        <div class="section-label" id="lblQ">Spørgsmål</div>
-        <div class="section-text" id="txtQ"></div>
-      </div>
-      <div class="section" id="secCtx">
-        <div class="section-label" id="lblCtx">Kontekst</div>
-        <div class="section-text ctx" id="txtCtx"></div>
-      </div>
-      <div class="section" id="secEss" style="display:none">
-        <div class="section-label" id="lblEss">Essens</div>
-        <div class="section-text essens" id="txtEss"></div>
-      </div>
-      <div class="section" id="secRef" style="display:none">
-        <div class="section-label" id="lblRef">Refleksion</div>
-        <div class="section-text refleksion" id="txtRef"></div>
-      </div>
-      <div class="section" id="secUdd" style="display:none">
-        <div class="section-label" id="lblUdd">Uddybning</div>
-        <div class="section-text" id="txtUdd"></div>
-      </div>
-      <div class="section" id="secSvar" style="display:none">
-        <div class="section-label" id="lblSvar">Svar på refleksion</div>
-        <div class="section-text svar" id="txtSvar"></div>
-      </div>
-      <div class="section" id="secSrc" style="display:none">
-        <div class="section-label" id="lblSrc">Kilde</div>
-        <div class="section-text src" id="txtSrc"></div>
-      </div>
+      <div class="badge bp" id="badge">Spørgsmål</div>
+      <div class="sec"><div class="sec-lbl" id="lQ">Spørgsmål</div><div class="sec-txt" id="tQ"></div></div>
+      <div class="sec"><div class="sec-lbl" id="lCtx">Kontekst</div><div class="sec-txt ctx" id="tCtx"></div></div>
+      <div class="sec" id="sEss" style="display:none"><div class="sec-lbl" id="lEss">Essens</div><div class="sec-txt essens" id="tEss"></div></div>
+      <div class="sec" id="sRef" style="display:none"><div class="sec-lbl" id="lRef">Refleksion</div><div class="sec-txt ref" id="tRef"></div></div>
+      <div class="sec" id="sUdd" style="display:none"><div class="sec-lbl" id="lUdd">Uddybning</div><div class="sec-txt" id="tUdd"></div></div>
+      <div class="sec" id="sSvar" style="display:none"><div class="sec-lbl" id="lSvar">Svar på refleksion</div><div class="sec-txt svar" id="tSvar"></div></div>
+      <div class="sec" id="sSrc" style="display:none"><div class="sec-lbl" id="lSrc">Kilde</div><div class="sec-txt src" id="tSrc"></div></div>
     </div>
   </div>
-
-  <div class="speak-bar" id="speakBar" style="display:none">
+  <div class="spkbar" id="spkbar" style="display:none">
     <div class="dot"></div>
-    <span id="speakLabel">Læser op...</span>
-    <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+    <span class="spklbl" id="spklbl">Læser op...</span>
+    <div class="barw"><div class="barf" id="barf"></div></div>
   </div>
-
   <div class="ctrl">
-    <button class="btn bs" id="spdbtn" onclick="cycleSpeed()">1.0x</button>
-    <button class="btn bp2" id="playbtn" onclick="togglePlay()">▶ Afspil</button>
-    <button class="btn bs" onclick="skip()">Skip ›</button>
+    <button class="btn btnsec" id="spdbtn" onclick="cycleSpeed()">1.0x</button>
+    <button class="btn btnmain" id="playbtn" onclick="togglePlay()">▶ Afspil</button>
+    <button class="btn btnsec" onclick="skip()">Skip ›</button>
   </div>
 </div>
 
+<!-- AI VOICE ENGINES — load both in parallel -->
+<script type="module">
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
+import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.web.js';
+
+env.allowLocalModels = false;
+
+function setStatus(lang, status, dotClass) {
+  document.getElementById(lang + 'Status').textContent = status;
+  document.getElementById(lang + 'Dot').className = 'vs-dot ' + dotClass;
+}
+
+// Load Danish MMS-TTS and Kokoro in parallel
+const ovTitle = document.getElementById('ovTitle');
+const ovSub = document.getElementById('ovSub');
+const ovProg = document.getElementById('ovProg');
+
+let daReady = false, enReady = false;
+
+// Danish: Meta MMS-TTS
+const daTTS = pipeline('text-to-speech', 'facebook/mms-tts-dan', {
+  device: 'wasm',
+  dtype: 'fp32',
+  progress_callback: (p) => {
+    if (p.status === 'progress' && p.total) {
+      const pct = Math.round((p.loaded / p.total) * 100);
+      ovProg.textContent = `🇩🇰 Dansk: ${(p.loaded/1024/1024).toFixed(0)} / ${(p.total/1024/1024).toFixed(0)} MB (${pct}%)`;
+    }
+  }
+}).then(pipe => {
+  window.daTTSPipe = pipe;
+  window.daReady = true;
+  daReady = true;
+  setStatus('da', 'Meta MMS-TTS klar — naturlig dansk stemme', 'g');
+  checkDone();
+}).catch(e => {
+  console.warn('DA TTS fejl:', e);
+  window.daReady = false;
+  setStatus('da', 'Ikke tilgængelig — bruger browser TTS', 'r');
+  daReady = true;
+  checkDone();
+});
+
+// English: Kokoro
+const enTTS = KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0', {
+  dtype: 'q8',
+  device: 'wasm',
+  progress_callback: (p) => {
+    if (p.status === 'progress' && p.total) {
+      const pct = Math.round((p.loaded / p.total) * 100);
+      ovProg.textContent = `🇬🇧 English: ${(p.loaded/1024/1024).toFixed(0)} / ${(p.total/1024/1024).toFixed(0)} MB (${pct}%)`;
+    }
+  }
+}).then(tts => {
+  window.enTTSEngine = tts;
+  window.enReady = true;
+  enReady = true;
+  setStatus('en', 'Kokoro AI klar — lydbogskvalitet', 'g');
+  checkDone();
+}).catch(e => {
+  console.warn('EN TTS fejl:', e);
+  window.enReady = false;
+  setStatus('en', 'Ikke tilgængelig — bruger browser TTS', 'r');
+  enReady = true;
+  checkDone();
+});
+
+function checkDone() {
+  if (daReady && enReady) {
+    document.getElementById('overlay').classList.remove('on');
+    updateVoiceChip();
+  }
+}
+
+window.updateVoiceChip = function() {
+  const chip = document.getElementById('voiceChip');
+  const da = window.daReady ? '🇩🇰 MMS-TTS' : '🇩🇰 Browser';
+  const en = window.enReady ? '🇬🇧 Kokoro AI' : '🇬🇧 Browser';
+  chip.textContent = da + ' / ' + en;
+  chip.className = 'chip' + ((window.daReady || window.enReady) ? ' ai' : '');
+};
+
+// Expose TTS functions
+window.speakDA = async function(text) {
+  if (!window.daReady || !window.daTTSPipe) return null;
+  try {
+    const result = await window.daTTSPipe(text);
+    return result;
+  } catch(e) { console.warn('DA speak error:', e); return null; }
+};
+
+window.speakEN = async function(text) {
+  if (!window.enReady || !window.enTTSEngine) return null;
+  try {
+    const result = await window.enTTSEngine.generate(text, { voice: 'af_sarah' });
+    return result;
+  } catch(e) { console.warn('EN speak error:', e); return null; }
+};
+
+// Show overlay while loading
+document.getElementById('overlay').classList.add('on');
+ovSub.textContent = 'Første gang downloades stemmerne (~140 MB total) og caches offline for altid. Derefter starter appen øjeblikkeligt.';
+</script>
+
 <script>
-// ═══════════════════════════════════════════════════
-// KORT-DATA — opdateret 2026-04-17
-// ═══════════════════════════════════════════════════
-const DECKS = [
-  {id:'woodworking',name:'Woodworking',icon:'🪵',cards:[
+// ═══════════════════════════════════════════════════════════
+// KORTDATA — opdateret 2026-04-17
+// ═══════════════════════════════════════════════════════════
+const SKILLS2026 = [
+  { id:'woodworking', name:'Woodworking', icon:'🪵', cards:[
     {
       spg:'Hvorfor er det en kritisk fejl at nedprioritere høre- og åndedrætsværn, selvom øjenbeskyttelse ofte føles som det mest åbenlyse behov?',
-      ctx:'Træbearbejdning. Værkstedet er fyldt med usynlige trusler. Begyndere fokuserer typisk på synlige farer som savblade, men overser skader der akkumuleres langsomt og umærkeligt over år.',
+      ctx:'Træbearbejdning. Værkstedet er fyldt med usynlige trusler. Begyndere fokuserer på synlige farer som savblade men overser skader der akkumuleres langsomt over år.',
       essens:'Støj- og støvskader er usynlige, smertefrie og irreversible. Når de kan mærkes er skaden allerede permanent.',
-      refleksion:'Hvis dit værksted har god udluftning og støvsuger tilsluttet maskinen, kan du så undlade masken?',
-      uddybning:'Mange fokuserer på øjnene fordi truslen fra flyvende objekter er umiddelbar og synlig. Men langtidsudsættelse for maskinstøj over 85 decibel fører til permanent høretab, og indånding af mikrostøv fra slibning kan forårsage alvorlige luftvejssygdomme som KOL. Støvskader akkumuleres over årtier. På det tidspunkt de mærkes er de irreversible. En klassisk begynderfejl er at droppe støvmasken ved hurtige snit fordi den er ubelejlig. Eksperten bærer altid maske og høreværn som en ufravigelig rutine, fordi disse skader er usynlige og langsomme men permanente. Ventilation og støvsugere fanger ikke de fineste mikropartikler tæt nok på indåndingszonen.',
-      svar:'Nej. En P2 støvmaske er nødvendig selv med god udluftning, da de farligste mikropartikler ikke fanges af ventilation alene.',
-      src:'The Weekend Woodworker — The Definitive Guide to Woodworking Safety'
+      refleksion:'Hvis dit værksted har god udluftning og støvsuger tilsluttet, kan du undlade masken?',
+      uddybning:'Mange fokuserer på øjnene fordi truslen fra flyvende objekter er umiddelbar. Men langtidsudsættelse for maskinstøj over 85 decibel fører til permanent høretab, og indånding af mikrostøv kan forårsage KOL. Støvskader akkumuleres over årtier og er irreversible på det tidspunkt de mærkes. En klassisk begynderfejl er at droppe støvmasken ved hurtige snit. Eksperten bærer altid maske og høreværn som ufravigelig rutine. Ventilation fanger ikke de fineste mikropartikler.',
+      svar:'Nej. En P2 støvmaske er nødvendig selv med god udluftning, da de farligste partikler ikke fanges af ventilation alene.',
+      src:'The Weekend Woodworker — Woodworking Safety'
     },
     {
       spg:'Hvad definerer savbladets farezone, og hvad er logikken bag at man aldrig skal stå direkte bag ved snitlinjen?',
       ctx:'Træbearbejdning. Risikoen ved rundsaven handler ikke kun om at røre bladet. Forståelsen af tilbageslag og farezonen er den vigtigste sikkerhedsviden ved maskinsavning.',
-      essens:'Den farligste zone er ikke foran bladet men direkte bag ved det. Her kastes emnet med voldsom kraft ved tilbageslag, og ingen reaktionstid er tilstrækkelig.',
+      essens:'Den farligste zone er ikke foran bladet men direkte bag ved det. Her kastes emnet med voldsom kraft ved tilbageslag og ingen reaktionstid er tilstrækkelig.',
       refleksion:'Hvad er det første du gør hvis emnet begynder at klemme om bladet under snittet?',
-      uddybning:'Tilbageslag opstår når træet klemmer om det roterende blad og momentant kastes bagud. Farezonen er en kegleformet linje bag bladet. Man bør aldrig stå her, hverken selv eller tillade andre. Sidepositionering er ekspertens standardposition: skulderen ud for kanten af emnet, aldrig bag ved snitlinjen. En typisk begynderfejl er at stå lige bag emnet fordi det føles som den naturlige position. Det er præcis den position der er dødeligst ved tilbageslag. Hastigheden kan overstige 200 kilometer i timen og ingen kan reagere hurtigt nok.',
+      uddybning:'Tilbageslag opstår når træet klemmer om det roterende blad og momentant kastes bagud. Farezonen er en kegleformet linje bag bladet. Man bør aldrig stå her. Sidepositionering er ekspertens standardposition: skulderen ud for kanten af emnet, aldrig bag ved snitlinjen. En typisk begynderfejl er at stå bag emnet fordi det føles naturligt. Hastigheden kan overstige 200 kilometer i timen.',
       svar:'Slip aldrig grebet og tryk aldrig fremad. Sluk maskinen straks eller frigør presset med en kile bag bladet.',
-      src:'The Weekend Woodworker — The Definitive Guide to Woodworking Safety'
+      src:'The Weekend Woodworker — Woodworking Safety'
     },
     {
-      spg:'Hvad er den afgørende forskel på at høvle med og mod træets fiber, og hvad sker der præcist når du høvler den forkerte vej?',
-      ctx:'Træbearbejdning. Høvlens retning i forhold til træets fibrer afgør om du får en silkeglat overflade eller river træet i stykker. Det er den mest grundlæggende viden i alt høvlearbejde.',
-      essens:'Høvler du mod fiberen river høvljernet fibrene op fra overfladen i stedet for at skære dem af. Resultatet er en ru og flænget overflade.',
+      spg:'Hvad er den afgørende forskel på at høvle med og mod træets fiber?',
+      ctx:'Træbearbejdning. Høvlens retning i forhold til fibrerne afgør om du får en silkeglat overflade eller river træet i stykker.',
+      essens:'Høvler du mod fiberen river høvljernet fibrene op fra overfladen. Resultatet er en ru og flænget overflade.',
       refleksion:'Hvad gør du hvis træets fibrer skifter retning midt i et bræt?',
-      uddybning:'Træ er opbygget af lange cellefibre der vokser i en bestemt retning langs stammen. Tænk på det som et bundt sugerør der ligger på skrå. Høvler du med fiberen skærer jernet ned langs fibrene og løsner dem rent, som at barbere i hårvækstens retning. Høvler du mod fiberen stikker jernet ind under fibrene og løfter dem op inden de er skåret over. Resultatet er synlige oprevne stykker kaldet tearout, der kan gå millimeter dybt. Identificér fibrenes retning ved at stryge hånden over brættet. Glat indikerer med fiberen. På brædder med skiftende kornretning, for eksempel mahogni og valnød, er der ingen entydig korrekt retning. Eksperten tager meget tynde spåner og arbejder diagonalt på 45 grader for at minimere tearout.',
-      svar:'Ved skiftende fiberretning: høvl diagonalt på 45 grader, brug en skrabehøvl med lille bid, eller skift til en metalhøvl.',
-      src:'Paul Sellers — Woodworking Masterclasses, Hand Plane Fundamentals'
+      uddybning:'Træ er opbygget af lange cellefibre langs stammen. Høvler du med fiberen skærer jernet fibrene rent, som at barbere i hårvækstens retning. Høvler du mod fiberen løfter jernet fibrene op inden de skæres over. Resultatet er tearout der kan gå millimeter dybt. Identificér fibrenes retning ved at stryge hånden over brættet. Glat indikerer med fiberen. Eksperten arbejder diagonalt ved skiftende kornretning.',
+      svar:'Ved skiftende fiberretning: høvl diagonalt på 45 grader, brug en skrabehøvl, eller skift til en metalhøvl.',
+      src:'Paul Sellers — Woodworking Masterclasses'
     },
     {
-      spg:'Hvad er logikken bag at starte med grov grit og arbejde mod fin, og hvad går konkret galt hvis du springer et trin over?',
-      ctx:'Træbearbejdning. Grit-rækkefølgen ved slibning er ikke vilkårlig. Den følger en logik om materialefratagelse og forfining der ikke kan omgås uden kompromis med slutresultatet.',
-      essens:'Springer du fra 400 direkte til 3000 efterlader du grove ridser som den fine sten ikke kan fjerne. Resultatet er en overflade der ser fin ud men er strukturelt ustabil.',
+      spg:'Hvad er logikken bag at starte med grov grit og arbejde mod fin ved slibning?',
+      ctx:'Træbearbejdning. Grit-rækkefølgen følger en logik om materialefratagelse og forfining der ikke kan omgås.',
+      essens:'Springer du fra 400 direkte til 3000 efterlader du grove ridser som den fine sten ikke kan fjerne.',
       refleksion:'Hvad gør du hvis træet har synlige hakker fra et fejlsnit inden du begynder at slibe?',
-      uddybning:'Grit-tallet angiver stenens grovhed. Lavt tal som 120 til 400 fjerner materiale og etablerer overfladegeometri. Højt tal som 1000 til 3000 polerer og forfiner. Du starter groft fordi en beskadiget overflade kræver materialefratagelse. Fine sten kan ikke fjerne ridser som grove sten efterlader. Hver sten fjerner kun ridser den foregående efterlod. Springer du et trin over kan ingen efterfølgende sten rette det op. Eksperter bruger hver sten til den efterlader ensartede ridser langs hele overfladen. En klassisk fejl er at skifte for tidligt fordi overfladen ser glat ud i direkte lys. Kontrollér altid i sidelys.',
-      svar:'Start på 120 til 200 grit for at komme under skaderne, derefter normal progression. At starte for fint betyder at du sliber i timevis uden at nå bunden af hakkerne.',
+      uddybning:'Lavt grit-tal som 120 til 400 fjerner materiale og etablerer overfladegeometri. Højt tal som 1000 til 3000 polerer. Hver sten fjerner kun ridser den foregående efterlod. Springer du et trin over kan ingen efterfølgende sten rette det op. Eksperter bruger hver sten til den efterlader ensartede ridser langs hele overfladen. Kontrollér altid i sidelys.',
+      svar:'Start på 120 til 200 grit for at komme under skaderne, derefter normal progression.',
       src:'The Weekend Woodworker — Sanding Fundamentals'
     }
   ]},
@@ -241,7 +338,7 @@ const DECKS = [
   {id:'football',name:'Football',icon:'⚽',cards:[]},
   {id:'guitar',name:'Guitar',icon:'🎸',cards:[]},
   {id:'renovation',name:'Renovation',icon:'🔨',cards:[]},
-  {id:'speed',name:'Speed & Running',icon:'🏃',cards:[]},
+  {id:'speed',name:'Speed/Running',icon:'🏃',cards:[]},
   {id:'sejlads',name:'Sejlads',icon:'⛵',cards:[]},
   {id:'dans',name:'Dans',icon:'💃',cards:[]},
   {id:'cocktails',name:'Cocktails',icon:'🍸',cards:[]},
@@ -252,286 +349,246 @@ const DECKS = [
   {id:'haandvaerk',name:'Håndværk',icon:'🪚',cards:[]},
   {id:'dannelse',name:'Dannelse',icon:'📖',cards:[]}
 ];
+const UNI = [];
 
-// ═══════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════════
-let lang='da', deck=null, order=[], idx=0, playing=false;
+let lang='da', selected=new Set(), activeCards=[], order=[], idx=0, playing=false;
 let speeds=[0.8,1.0,1.2,1.5], si=1;
-let apiKey='', currentAudio=null, spTimer=null;
-const audioCache={};
+let currentAudio=null, currentSource=null, spTimer=null;
 
-function loadKey(){try{apiKey=localStorage.getItem('fc_key')||'';}catch(e){}}
-function saveKey(){
-  apiKey=document.getElementById('keyInput').value.trim();
-  try{localStorage.setItem('fc_key',apiKey);}catch(e){}
-  updateVoiceChip();
-  hideSettings();
-}
-function showSettings(){
-  document.getElementById('keyInput').value=apiKey;
-  document.getElementById('home').classList.remove('on');
-  document.getElementById('settings').classList.add('on');
-}
-function hideSettings(){
-  document.getElementById('settings').classList.remove('on');
-  document.getElementById('home').classList.add('on');
-}
-function updateVoiceChip(){
-  const chip=document.getElementById('voiceChip');
-  if(apiKey.length>10){chip.textContent='ElevenLabs AI ✓';chip.className='voice-chip ai';}
-  else{chip.textContent='Browser TTS';chip.className='voice-chip';}
-}
-function setLang(l){
+function setLang(l) {
   lang=l;
   document.getElementById('vDA').classList.toggle('on',l==='da');
   document.getElementById('vEN').classList.toggle('on',l==='en');
 }
 
-// ═══════════════════════════════════════════════════
 // DECK LIST
-// ═══════════════════════════════════════════════════
-const dlEl=document.getElementById('deckList');
-DECKS.forEach(d=>{
-  const el=document.createElement('div');
-  el.className='di'+(d.cards.length===0?' empty':'');
-  el.innerHTML=`<div class="dl-left"><div class="di-icon">${d.icon}</div><div><div class="di-name">${d.name}</div><div class="di-count">${d.cards.length===0?'Ingen kort endnu':d.cards.length+' kort'}</div></div></div>${d.cards.length>0?'<span class="di-arr">›</span>':''}`;
-  if(d.cards.length>0) el.onclick=()=>openDeck(d);
-  dlEl.appendChild(el);
-});
+function renderDecks(decks, id) {
+  const el=document.getElementById(id);
+  el.innerHTML='';
+  if(!decks.length){el.innerHTML='<div style="font-size:13px;color:var(--mm);padding:8px 4px">Ingen decks endnu.</div>';return;}
+  decks.forEach(d=>{
+    const empty=d.cards.length===0;
+    const div=document.createElement('div');
+    div.className='di'+(empty?' empty':'');
+    div.id='deck_'+d.id;
+    div.innerHTML=`<div class="di-icon">${d.icon}</div><div class="di-info"><div class="di-name">${d.name}</div><div class="di-count">${empty?'Ingen kort endnu':d.cards.length+' kort'}</div></div><div class="di-check"><div class="di-check-inner"></div></div>`;
+    if(!empty) div.onclick=()=>toggleDeck(d.id);
+    el.appendChild(div);
+  });
+}
 
-// ═══════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════
-function openDeck(d){
-  deck=d; order=shuf(d.cards.length); idx=0; playing=false;
-  document.getElementById('ptitle').textContent=d.icon+' '+d.name;
-  document.getElementById('pprog').textContent='1/'+d.cards.length;
-  document.getElementById('idleView').style.display='flex';
+function toggleDeck(id) {
+  if(selected.has(id)) selected.delete(id); else selected.add(id);
+  document.getElementById('deck_'+id)?.classList.toggle('sel',selected.has(id));
+  updateGoBar();
+}
+function updateGoBar() {
+  const n=selected.size;
+  document.getElementById('goBar').classList.toggle('vis',n>0);
+  const total=[...selected].reduce((s,id)=>{const d=[...SKILLS2026,...UNI].find(x=>x.id===id);return s+(d?d.cards.length:0);},0);
+  document.getElementById('goInfo').innerHTML=`<strong>${n} deck${n>1?'s':''}</strong> valgt · ${total} kort`;
+}
+function clearSel() {
+  selected.forEach(id=>document.getElementById('deck_'+id)?.classList.remove('sel'));
+  selected.clear(); updateGoBar();
+}
+function startSel() {
+  const all=[...SKILLS2026,...UNI];
+  const cards=[];
+  selected.forEach(id=>{const d=all.find(x=>x.id===id);if(d) d.cards.forEach(c=>cards.push({...c,_deck:d.name,_icon:d.icon}));});
+  if(!cards.length) return;
+  openPlayer(cards,[...selected].map(id=>{const d=all.find(x=>x.id===id);return d?{name:d.name,icon:d.icon}:{};}));
+}
+
+// PLAYER
+function openPlayer(cards, infos) {
+  activeCards=cards; order=shuf(cards.length); idx=0; playing=false;
+  document.getElementById('ptitle').textContent=infos.length===1?infos[0].icon+' '+infos[0].name:'Blandet · '+infos.length+' decks';
+  document.getElementById('pprog').textContent='0/'+cards.length;
+  document.getElementById('idleArea').style.display='flex';
   document.getElementById('cardView').style.display='none';
-  document.getElementById('idleIcon').textContent=d.icon;
-  document.getElementById('idleTitle').textContent=d.name;
-  document.getElementById('speakBar').style.display='none';
+  document.getElementById('spkbar').style.display='none';
   document.getElementById('playbtn').textContent='▶ Afspil';
-  updateVoiceChip();
-  clearBar();
-  cancelAll();
+  document.getElementById('idleChips').innerHTML=infos.map(d=>`<span class="chip">${d.icon} ${d.name}</span>`).join('');
+  if(window.updateVoiceChip) window.updateVoiceChip();
+  clearBar(); cancelAll();
   document.getElementById('home').classList.remove('on');
   document.getElementById('player').classList.add('on');
 }
-function goHome(){
+function goHome() {
   playing=false; cancelAll(); clearBar();
-  document.getElementById('speakBar').style.display='none';
+  document.getElementById('spkbar').style.display='none';
   document.getElementById('player').classList.remove('on');
   document.getElementById('home').classList.add('on');
 }
-
-// ═══════════════════════════════════════════════════
-// PLAYBACK CONTROL
-// ═══════════════════════════════════════════════════
-function togglePlay(){
+function togglePlay() {
   if(playing){
     playing=false; cancelAll(); clearBar();
     document.getElementById('playbtn').textContent='▶ Fortsæt';
-    document.getElementById('speakBar').style.display='none';
+    document.getElementById('spkbar').style.display='none';
   }else{
     playing=true;
     document.getElementById('playbtn').textContent='⏸ Pause';
-    document.getElementById('idleView').style.display='none';
+    document.getElementById('idleArea').style.display='none';
     document.getElementById('cardView').style.display='block';
     playCard();
   }
 }
-function skip(){cancelAll();clearBar();if(playing)nextCard();}
-function nextCard(){idx++;if(idx>=order.length){order=shuf(deck.cards.length);idx=0;}if(playing)playCard();}
+function skip(){cancelAll();clearBar();if(playing) nextCard();}
+function nextCard(){idx++;if(idx>=order.length){order=shuf(activeCards.length);idx=0;}if(playing) playCard();}
 function cycleSpeed(){si=(si+1)%speeds.length;document.getElementById('spdbtn').textContent=speeds[si].toFixed(1)+'x';}
 function shuf(n){let a=[...Array(n).keys()];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 function cancelAll(){
   if(spTimer){clearTimeout(spTimer);spTimer=null;}
+  if(currentSource){try{currentSource.stop();}catch(e){}currentSource=null;}
   if(currentAudio){currentAudio.pause();currentAudio=null;}
   window.speechSynthesis.cancel();
 }
-
+function clearBar(){const b=document.getElementById('barf');b.style.transition='none';b.style.width='0%';}
+function animBar(ms){
+  clearBar();const b=document.getElementById('barf');b.style.transition='none';b.style.width='0%';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{b.style.transition=`width ${ms}ms linear`;b.style.width='100%';}));
+}
+function highlight(id){document.querySelectorAll('.sec-lbl').forEach(l=>l.classList.remove('act'));if(id)document.getElementById(id)?.classList.add('act');}
 function setBadge(ph){
   const b=document.getElementById('badge');
   if(ph==='q'){b.className='badge bq';b.textContent='Spørgsmål';}
   else if(ph==='a'){b.className='badge ba';b.textContent='Svar';}
-  else{b.className='badge bp';b.textContent='Pause';}
+  else{b.className='badge bp';b.textContent='...';}
 }
 
-function animBar(ms){
-  clearBar();
-  const b=document.getElementById('bar');
-  b.style.transition='none';b.style.width='0%';
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{b.style.transition=`width ${ms}ms linear`;b.style.width='100%';}));
-}
-function clearBar(){const b=document.getElementById('bar');b.style.transition='none';b.style.width='0%';}
-
-function highlightSection(sectionId){
-  document.querySelectorAll('.section-label').forEach(l=>l.classList.remove('active'));
-  if(sectionId) document.getElementById(sectionId)?.classList.add('active');
-}
-
-// ═══════════════════════════════════════════════════
-// TTS — ElevenLabs eller browser
-// ═══════════════════════════════════════════════════
-async function speak(text, labelId, onDone){
+// TTS
+async function speak(text, labelId, onDone) {
   if(!playing) return;
   cancelAll();
-  document.getElementById('speakBar').style.display='flex';
-  document.getElementById('speakLabel').textContent='Læser op...';
-  if(labelId) highlightSection(labelId);
+  document.getElementById('spkbar').style.display='flex';
+  document.getElementById('spklbl').textContent='Læser op...';
+  if(labelId) highlight(labelId);
 
-  if(apiKey.length>10){
-    await speakAI(text, onDone);
-  }else{
+  const useDA = lang==='da' && window.daReady && window.daTTSPipe;
+  const useEN = lang==='en' && window.enReady && window.enTTSEngine;
+
+  if(useDA) {
+    await speakWithModel(text, 'da', onDone);
+  } else if(useEN) {
+    await speakWithModel(text, 'en', onDone);
+  } else {
     speakBrowser(text, onDone);
   }
 }
 
-async function speakAI(text, onDone){
-  const key='v1|'+text.slice(0,50);
-  let blob=audioCache[key];
-  if(!blob){
-    try{
-      const res=await fetch('https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM',{
-        method:'POST',
-        headers:{'xi-api-key':apiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({text:text,model_id:'eleven_multilingual_v2',voice_settings:{stability:0.5,similarity_boost:0.75}})
-      });
-      if(!res.ok) throw new Error(res.status);
-      blob=await res.blob();
-      audioCache[key]=blob;
-    }catch(e){
-      console.warn('AI fejl, bruger browser:',e);
-      speakBrowser(text,onDone);
-      return;
-    }
+async function speakWithModel(text, modelLang, onDone) {
+  try {
+    document.getElementById('spklbl').textContent = 'Genererer lyd...';
+    let result;
+    if(modelLang==='da') result = await window.speakDA(text);
+    else result = await window.speakEN(text);
+    if(!result || !playing) { if(onDone&&playing) spTimer=setTimeout(onDone,200); return; }
+
+    document.getElementById('spklbl').textContent='Læser op...';
+
+    // Create AudioContext and play PCM data
+    const audioData = result.audio || result;
+    const sampleRate = result.sampling_rate || 22050;
+    const pcm = audioData instanceof Float32Array ? audioData : new Float32Array(audioData);
+
+    const ctx = new AudioContext();
+    const buffer = ctx.createBuffer(1, pcm.length, sampleRate);
+    buffer.getChannelData(0).set(pcm);
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.playbackRate.value = speeds[si];
+    src.connect(ctx.destination);
+    currentSource = src;
+
+    const durationMs = (pcm.length / sampleRate / speeds[si]) * 1000;
+    animBar(durationMs);
+
+    let done=false;
+    const fin=()=>{
+      if(done) return; done=true;
+      ctx.close().catch(()=>{});
+      clearBar();
+      if(playing&&onDone) spTimer=setTimeout(onDone,200);
+    };
+    src.onended=fin;
+    src.start();
+    spTimer=setTimeout(()=>{if(!done){try{src.stop();}catch(e){}fin();}}, durationMs*1.5+2000);
+  } catch(e) {
+    console.warn('Model TTS fejl:', e);
+    speakBrowser(text, onDone);
   }
-  if(!playing) return;
-  const url=URL.createObjectURL(blob);
-  const a=new Audio(url);
-  a.playbackRate=speeds[si];
-  currentAudio=a;
-  const ms=Math.max(1000,(text.split(/\s+/).length/(150*speeds[si]))*60000);
-  animBar(ms);
-  let done=false;
-  const fin=()=>{if(done)return;done=true;URL.revokeObjectURL(url);clearBar();if(playing&&onDone)spTimer=setTimeout(onDone,250);};
-  a.onended=fin;
-  a.onerror=fin;
-  a.play().catch(fin);
 }
 
-function speakBrowser(text, onDone){
+function speakBrowser(text, onDone) {
+  window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.rate=speeds[si];
-  u.pitch=1.0;
-  u.volume=1.0;
+  u.rate=speeds[si]; u.pitch=1.0;
   const voices=window.speechSynthesis.getVoices();
-  let v=null;
-  if(lang==='da'){
-    v=voices.find(x=>x.name.includes('Sara'))||voices.find(x=>x.lang.startsWith('da'));
-  }else{
-    v=voices.find(x=>x.name.includes('Daniel'))||voices.find(x=>x.name.includes('Samantha'))||voices.find(x=>x.name.includes('Karen'))||voices.find(x=>x.lang.startsWith('en-GB'))||voices.find(x=>x.lang.startsWith('en'));
-  }
+  let v=lang==='da'
+    ?voices.find(x=>x.name.includes('Sara'))||voices.find(x=>x.lang.startsWith('da'))
+    :voices.find(x=>x.name.includes('Daniel'))||voices.find(x=>x.lang.startsWith('en'));
   if(v){u.voice=v;u.lang=v.lang;}else{u.lang=lang==='da'?'da-DK':'en-GB';}
-
-  const ms=Math.max(1000,(text.split(/\s+/).length/(140*speeds[si]))*60000);
+  const ms=Math.max(600,(text.split(/\s+/).length/(140*speeds[si]))*60000);
   animBar(ms);
-
+  document.getElementById('spklbl').textContent='Læser op...';
   let done=false;
-  const fin=()=>{if(done)return;done=true;clearBar();if(playing&&onDone)spTimer=setTimeout(onDone,250);};
-  u.onend=fin;
-  u.onerror=fin;
+  const fin=()=>{if(done)return;done=true;clearBar();if(playing&&onDone)spTimer=setTimeout(onDone,200);};
+  u.onend=fin; u.onerror=fin;
   window.speechSynthesis.speak(u);
-  spTimer=setTimeout(()=>{if(!done){window.speechSynthesis.cancel();fin();}}, ms*2.8+3000);
+  spTimer=setTimeout(()=>{if(!done){window.speechSynthesis.cancel();fin();}},ms*2.8+3000);
 }
 
-function wait(ms, onDone){
+function wait(ms,onDone){
   if(!playing) return;
-  clearBar();
-  document.getElementById('speakBar').style.display='none';
-  highlightSection(null);
-  setBadge('p');
+  clearBar(); document.getElementById('spkbar').style.display='none'; highlight(null); setBadge('p');
   spTimer=setTimeout(()=>{if(playing&&onDone)onDone();},ms);
 }
 
-// ═══════════════════════════════════════════════════
-// CARD SEQUENCE — viser OG læser al tekst
-// ═══════════════════════════════════════════════════
-function playCard(){
-  if(!deck||!playing) return;
-  const c=deck.cards[order[idx]];
-  document.getElementById('pprog').textContent=(idx+1)+'/'+deck.cards.length;
-
-  // Vis spørgsmål + kontekst, skjul resten
-  document.getElementById('txtQ').textContent=c.spg;
-  document.getElementById('txtCtx').textContent=c.ctx;
-  document.getElementById('txtEss').textContent=c.essens;
-  document.getElementById('txtRef').textContent=c.refleksion;
-  document.getElementById('txtUdd').textContent=c.uddybning;
-  document.getElementById('txtSvar').textContent=c.svar;
-  document.getElementById('txtSrc').textContent=c.src;
-
-  document.getElementById('secEss').style.display='none';
-  document.getElementById('secRef').style.display='none';
-  document.getElementById('secUdd').style.display='none';
-  document.getElementById('secSvar').style.display='none';
-  document.getElementById('secSrc').style.display='none';
-
+// CARD SEQUENCE
+function playCard() {
+  if(!activeCards.length||!playing) return;
+  const c=activeCards[order[idx]];
+  document.getElementById('pprog').textContent=(idx+1)+'/'+activeCards.length;
+  document.getElementById('tQ').textContent=c.spg;
+  document.getElementById('tCtx').textContent=c.ctx;
+  document.getElementById('tEss').textContent=c.essens;
+  document.getElementById('tRef').textContent=c.refleksion;
+  document.getElementById('tUdd').textContent=c.uddybning;
+  document.getElementById('tSvar').textContent=c.svar;
+  document.getElementById('tSrc').textContent=(c._deck?c._deck+' — ':'')+c.src;
+  ['sEss','sRef','sUdd','sSvar','sSrc'].forEach(id=>document.getElementById(id).style.display='none');
   setBadge('q');
   document.getElementById('cardArea').scrollTop=0;
 
-  // Læs spørgsmålet
-  speak(`Spørgsmål: ${c.spg}`, 'lblQ', ()=>{
-    // Læs konteksten
-    speak(`Kontekst: ${c.ctx}`, 'lblCtx', ()=>{
-      // Pause
-      wait(2500, ()=>{
-        setBadge('a');
-        // Vis essens
-        document.getElementById('secEss').style.display='block';
-        // Læs essens
-        speak(`Essens: ${c.essens}`, 'lblEss', ()=>{
-          // Vis refleksion
-          document.getElementById('secRef').style.display='block';
-          // Læs refleksion
-          speak(`Refleksionsspørgsmål: ${c.refleksion}`, 'lblRef', ()=>{
-            // Vis uddybning
-            document.getElementById('secUdd').style.display='block';
-            document.getElementById('secUdd').scrollIntoView({behavior:'smooth',block:'center'});
-            // Læs uddybning
-            speak(c.uddybning, 'lblUdd', ()=>{
-              // Vis svar
-              document.getElementById('secSvar').style.display='block';
-              document.getElementById('secSvar').scrollIntoView({behavior:'smooth',block:'center'});
-              // Læs svar
-              speak(`Svar på refleksion: ${c.svar}`, 'lblSvar', ()=>{
-                // Vis kilde
-                document.getElementById('secSrc').style.display='block';
-                speak(`Kilde: ${c.src}`, 'lblSrc', ()=>{
-                  // Pause inden næste kort
-                  wait(3000, nextCard);
-                });
-              });
-            });
-          });
-        });
-      });
-    });
+  speak(`Spørgsmål: ${c.spg}`,'lQ',()=>{
+  speak(`Kontekst: ${c.ctx}`,'lCtx',()=>{
+  wait(3200,()=>{
+    setBadge('a');
+    document.getElementById('sEss').style.display='block';
+    speak(c.essens,'lEss',()=>{
+    document.getElementById('sRef').style.display='block';
+    speak(`Refleksionsspørgsmål: ${c.refleksion}`,'lRef',()=>{
+    document.getElementById('sUdd').style.display='block';
+    document.getElementById('sUdd').scrollIntoView({behavior:'smooth',block:'nearest'});
+    speak(c.uddybning,'lUdd',()=>{
+    document.getElementById('sSvar').style.display='block';
+    document.getElementById('sSvar').scrollIntoView({behavior:'smooth',block:'nearest'});
+    speak(`Svar på refleksion: ${c.svar}`,'lSvar',()=>{
+    document.getElementById('sSrc').style.display='block';
+    speak(`Kilde: ${c.src}`,'lSrc',()=>{
+    wait(3500,nextCard);
+    });});});});
   });
+  });});});
 }
 
-// ═══════════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════════
-loadKey();
-updateVoiceChip();
-if(typeof speechSynthesis!=='undefined'){
-  speechSynthesis.onvoiceschanged=()=>{};
-  setTimeout(()=>speechSynthesis.getVoices(),100);
-}
+renderDecks(SKILLS2026,'skills2026');
+renderDecks(UNI,'uniDecks');
+if(typeof speechSynthesis!=='undefined'){speechSynthesis.onvoiceschanged=()=>{};setTimeout(()=>speechSynthesis.getVoices(),200);}
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
