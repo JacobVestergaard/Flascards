@@ -193,6 +193,8 @@ import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers
 import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/dist/kokoro.web.js';
 
 env.allowLocalModels = false;
+env.backends.onnx.wasm.numThreads = 1;
+env.backends.onnx.wasm.simd = false;
 
 function setStatus(lang, status, dotClass) {
   document.getElementById(lang + 'Status').textContent = status;
