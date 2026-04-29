@@ -62,27 +62,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   <div class="hh">
     <div class="ht">Flashcards</div>
     <div class="hs">Vælg decks og tryk Afspil</div>
-    <div class="vs"><div class="vsdot" id="vsdot" style="background:var(--y)"></div><span id="vstext">Indlæser kortdata...</span></div>
+    <div class="vs"><div class="vsdot" id="vsdot" style="background:var(--y)"></div><span id="vstext">Indlæser deckliste...</span></div>
     <div class="vr">
-      <button class="vb on" id="vDA" onclick="setLang('da')">🇩🇰 Dansk</button>
-      <button class="vb" id="vEN" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="vb on" id="vDA" onclick="setLang('da')">Dansk</button>
+      <button class="vb" id="vEN" onclick="setLang('en')">English</button>
     </div>
   </div>
   <div class="ds">
-    <div class="sl">📖 Dannelse</div><div id="sD"></div>
-    <div class="sl" style="margin-top:4px">⭐ Skills</div><div id="sS"></div>
-    <div class="sl" style="margin-top:4px">🎓 UNI</div><div id="sU"></div>
-    <div class="sl" style="margin-top:4px">💰 Private Economy</div><div id="sP"></div>
+    <div class="sl">Dannelse</div><div id="sD"></div>
+    <div class="sl" style="margin-top:4px">Skills</div><div id="sS"></div>
+    <div class="sl" style="margin-top:4px">UNI</div><div id="sU"></div>
+    <div class="sl" style="margin-top:4px">Private Economy</div><div id="sP"></div>
   </div>
   <div class="gb" id="gb">
     <div class="gi" id="gi"><strong>0 decks</strong> valgt</div>
     <button class="gc" onclick="clearSel()">Ryd</button>
-    <button class="gg" onclick="startSel()">▶ Afspil</button>
+    <button class="gg" id="playBtn" onclick="startSel()">Afspil</button>
   </div>
 </div>
 <div class="screen" id="player">
   <div class="ph">
-    <button class="bk" onclick="goHome()">← Decks</button>
+    <button class="bk" onclick="goHome()">Decks</button>
     <span class="pt" id="pt"></span><span class="pp" id="pp">0/0</span>
   </div>
   <div class="ca" id="ca">
@@ -90,7 +90,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
       <div class="ii">▶</div><div class="it">Klar</div>
       <div class="is">Tryk Afspil — kortene afspilles tilfældigt og fortsætter automatisk</div>
       <div class="ic" id="ic"></div>
-      <div class="chip ai">🔊 Google TTS — naturlig stemme</div>
+      <div class="chip ai">Google TTS — naturlig stemme</div>
     </div>
     <div id="cv" style="display:none">
       <div class="badge bp" id="badge">Spørgsmål</div>
@@ -109,30 +109,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
   <div class="ctrl">
     <button class="btn bs2" id="spdbtn" onclick="cycleSpeed()">1.0x</button>
-    <button class="btn bm" id="playbtn" onclick="togglePlay()">▶ Afspil</button>
-    <button class="btn bs2" onclick="skip()">Skip ›</button>
+    <button class="btn bm" id="playbtn" onclick="togglePlay()">Afspil</button>
+    <button class="btn bs2" onclick="skip()">Skip</button>
   </div>
 </div>
 <script>
-// Kortdata hentes fra cards.json (holder index.html lille og hurtig)
 const VOICE={da:"Danish Female",en:"UK English Female"};
-let ALL=[],lang="da",sel=new Set(),cards=[],order=[],idx=0,playing=false;
+const TS="1777455986";
+let META=[];
+const CARD_CACHE={};
+let lang="da",sel=new Set(),cards=[],order=[],idx=0,playing=false;
 let speeds=[0.8,1.0,1.2,1.5],si=1,tmr=null;
 
-// Hent kortdata fra cards.json
-fetch("./cards.json?v=1777453223")
+fetch(`./decks.json?v=${TS}`)
   .then(r=>r.json())
   .then(data=>{
-    ALL=data.decks||[];
-    const tot=ALL.reduce((s,d)=>s+d.cards.length,0);
+    META=data.decks||[];
+    const tot=META.reduce((s,d)=>s+d.n,0);
     document.getElementById("vsdot").style.background="var(--g)";
-    document.getElementById("vstext").textContent=`${tot} kort klar — Google TTS naturlig stemme`;
+    document.getElementById("vstext").textContent=`${tot} kort i ${META.length} decks`;
     renderAll();
   })
-  .catch(e=>{
+  .catch(()=>{
     document.getElementById("vstext").textContent="Fejl: kør sync.py igen";
-    console.error(e);
   });
+
+async function loadDeck(id) {
+  if(CARD_CACHE[id]) return CARD_CACHE[id];
+  const r = await fetch(`./cards/${id}.json?v=${TS}`);
+  const raw = await r.json();
+  CARD_CACHE[id] = raw.map(c=>({
+    spg:c[0],ctx:c[1],essens:c[2],refleksion:c[3],uddybning:c[4],svar:c[5],src:c[6]
+  }));
+  return CARD_CACHE[id];
+}
 
 function setLang(l){lang=l;document.getElementById("vDA").classList.toggle("on",l==="da");document.getElementById("vEN").classList.toggle("on",l==="en");}
 
@@ -144,7 +154,7 @@ function renderAll(){
 }
 
 function renderDecks(cat,id){
-  const decks=ALL.filter(d=>d.cat===cat);
+  const decks=META.filter(d=>d.cat===cat);
   const el=document.getElementById(id);
   if(!el)return;
   el.innerHTML="";
@@ -152,29 +162,60 @@ function renderDecks(cat,id){
   decks.forEach(d=>{
     const div=document.createElement("div");
     div.className="di";div.id="dk_"+d.id;
-    div.innerHTML=`<div class="dii">${d.icon}</div><div style="flex:1"><div class="din">${d.name}</div><div class="dic">${d.cards.length} kort</div></div><div class="dck"><div class="dci"></div></div>`;
+    div.innerHTML=`<div class="dii">${d.icon}</div><div style="flex:1"><div class="din">${d.name}</div><div class="dic">${d.n} kort</div></div><div class="dck"><div class="dci"></div></div>`;
     div.onclick=()=>toggleDeck(d.id);
     el.appendChild(div);
   });
 }
 
-function toggleDeck(id){if(sel.has(id))sel.delete(id);else sel.add(id);document.getElementById("dk_"+id)?.classList.toggle("sel",sel.has(id));updateGB();}
-function updateGB(){const n=sel.size;document.getElementById("gb").classList.toggle("vis",n>0);const tot=[...sel].reduce((s,id)=>{const d=ALL.find(x=>x.id===id);return s+(d?d.cards.length:0);},0);document.getElementById("gi").innerHTML=`<strong>${n} deck${n>1?"s":""}</strong> valgt · ${tot} kort`;}
+function toggleDeck(id){
+  if(sel.has(id))sel.delete(id);else sel.add(id);
+  document.getElementById("dk_"+id)?.classList.toggle("sel",sel.has(id));
+  updateGB();
+}
+function updateGB(){
+  const n=sel.size;
+  document.getElementById("gb").classList.toggle("vis",n>0);
+  const tot=[...sel].reduce((s,id)=>{const d=META.find(x=>x.id===id);return s+(d?d.n:0);},0);
+  document.getElementById("gi").innerHTML=`<strong>${n} deck${n>1?"s":""}</strong> valgt · ${tot} kort`;
+}
 function clearSel(){sel.forEach(id=>document.getElementById("dk_"+id)?.classList.remove("sel"));sel.clear();updateGB();}
-function startSel(){const c=[];sel.forEach(id=>{const d=ALL.find(x=>x.id===id);if(d)d.cards.forEach((card,ci)=>c.push({...card,_d:d.name,_id:d.id,_ci:ci}));});if(!c.length)return;openPlayer(c,[...sel].map(id=>{const d=ALL.find(x=>x.id===id);return d?{name:d.name,icon:d.icon}:{};}));}
+
+async function startSel(){
+  const btn=document.getElementById("playBtn");
+  const ids=[...sel];
+  if(!ids.length)return;
+
+  btn.textContent="Indlæser...";
+  btn.disabled=true;
+
+  const results = await Promise.all(ids.map(id=>loadDeck(id).catch(()=>[])));
+
+  const allCards=[];
+  ids.forEach((id,i)=>{
+    const d=META.find(x=>x.id===id);
+    if(d) results[i].forEach((card,ci)=>allCards.push({...card,_d:d.name,_id:d.id,_ci:ci}));
+  });
+
+  btn.textContent="Afspil";
+  btn.disabled=false;
+
+  if(!allCards.length)return;
+  openPlayer(allCards, ids.map(id=>{const d=META.find(x=>x.id===id);return d?{name:d.name,icon:d.icon}:{};}));
+}
 
 function openPlayer(c,infos){
   cards=c;order=shuf(c.length);idx=0;playing=false;
-  document.getElementById("pt").textContent=infos.length===1?infos[0].icon+" "+infos[0].name:"Blandet · "+infos.length+" decks";
+  document.getElementById("pt").textContent=infos.length===1?infos[0].name:"Blandet · "+infos.length+" decks";
   document.getElementById("pp").textContent="0/"+c.length;
   document.getElementById("ia").style.display="flex";document.getElementById("cv").style.display="none";
-  document.getElementById("spk").style.display="none";document.getElementById("playbtn").textContent="▶ Afspil";
-  document.getElementById("ic").innerHTML=infos.map(d=>`<span class="chip">${d.icon} ${d.name}</span>`).join("");
+  document.getElementById("spk").style.display="none";document.getElementById("playbtn").textContent="Afspil";
+  document.getElementById("ic").innerHTML=infos.map(d=>`<span class="chip">${d.name}</span>`).join("");
   clearBar();cancelAll();
   document.getElementById("home").classList.remove("on");document.getElementById("player").classList.add("on");
 }
 function goHome(){playing=false;cancelAll();clearBar();document.getElementById("spk").style.display="none";document.getElementById("player").classList.remove("on");document.getElementById("home").classList.add("on");}
-function togglePlay(){if(playing){playing=false;cancelAll();clearBar();document.getElementById("playbtn").textContent="▶ Fortsæt";document.getElementById("spk").style.display="none";}else{playing=true;document.getElementById("playbtn").textContent="⏸ Pause";document.getElementById("ia").style.display="none";document.getElementById("cv").style.display="block";playCard();}}
+function togglePlay(){if(playing){playing=false;cancelAll();clearBar();document.getElementById("playbtn").textContent="Fortsæt";document.getElementById("spk").style.display="none";}else{playing=true;document.getElementById("playbtn").textContent="Pause";document.getElementById("ia").style.display="none";document.getElementById("cv").style.display="block";playCard();}}
 function skip(){cancelAll();clearBar();if(playing)nextCard();}
 function nextCard(){idx++;if(idx>=order.length){order=shuf(cards.length);idx=0;}if(playing)playCard();}
 function cycleSpeed(){si=(si+1)%speeds.length;document.getElementById("spdbtn").textContent=speeds[si].toFixed(1)+"x";}
