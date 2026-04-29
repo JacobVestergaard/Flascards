@@ -3,7 +3,6 @@ self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(F
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
   const url = new URL(e.request.url);
-  // Cache JSON filer dynamisk efter de er hentet første gang
   if(url.pathname.endsWith('.json')) {
      e.respondWith(
        caches.match(e.request).then(cached => {

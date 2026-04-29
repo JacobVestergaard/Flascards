@@ -44,7 +44,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .sl2{font-size:10px;color:var(--mm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:600;transition:color .2s}.sl2.act{color:var(--y)}
 .st{font-size:15px;line-height:1.72;color:var(--t)}.st.ctx,.st.src{color:var(--m);font-size:13px;font-style:italic}.st.essens{font-weight:600;font-size:16px;color:#fff}.st.ref,.st.svar{color:var(--p);font-size:14px;line-height:1.65}
 .idle{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:11px;text-align:center;padding:40px 22px}
-.ii{font-size:44px}.it{font-size:19px;font-weight:600}.is{font-size:13px;color:var(--m);line-height:1.65;max-width:280px}
+.it{font-size:19px;font-weight:600}.is{font-size:13px;color:var(--m);line-height:1.65;max-width:280px}
 .ic{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .chip{font-size:11px;padding:4px 10px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)}.chip.ai{color:var(--g);border-color:#2a4a2a;background:#0d2010}
 .spk{padding:9px 18px;background:#0a150a;border-top:1px solid #1a3a1a;display:flex;align-items:center;gap:10px;min-height:37px}
@@ -87,10 +87,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
   <div class="ca" id="ca">
     <div class="idle" id="ia">
-      <div class="ii">▶</div><div class="it">Klar</div>
-      <div class="is">Tryk Afspil — kortene afspilles tilfældigt og fortsætter automatisk</div>
+      <div class="it">Klar</div>
+      <div class="is">Tryk Afspil. Kortene afspilles tilfældigt og fortsætter automatisk.</div>
       <div class="ic" id="ic"></div>
-      <div class="chip ai">Google TTS — naturlig stemme</div>
+      <div class="chip ai">Google TTS naturlig stemme</div>
     </div>
     <div id="cv" style="display:none">
       <div class="badge bp" id="badge">Spørgsmål</div>
@@ -115,7 +115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 </div>
 <script>
 const VOICE={da:"Danish Female",en:"UK English Female"};
-const TS="1777455986";
+const TS="1777459675";
 let META=[];
 const CARD_CACHE={};
 let lang="da",sel=new Set(),cards=[],order=[],idx=0,playing=false;
@@ -252,7 +252,7 @@ function playCard(){
   document.getElementById("tQ").textContent=c.spg;document.getElementById("tC").textContent=c.ctx;
   document.getElementById("tE").textContent=c.essens;document.getElementById("tR").textContent=c.refleksion;
   document.getElementById("tU").textContent=c.uddybning;document.getElementById("tS").textContent=c.svar;
-  document.getElementById("tK").textContent=(c._d?c._d+" — ":"")+c.src;
+  document.getElementById("tK").textContent=(c._d?c._d+" - ":"")+c.src;
   ["sE","sR","sU2","sS2","sK"].forEach(id=>document.getElementById(id).style.display="none");
   setBadge("q");document.getElementById("ca").scrollTop=0;
   speak("Spørgsmål: "+c.spg,"lQ",()=>{speak("Kontekst: "+c.ctx,"lC",()=>{
