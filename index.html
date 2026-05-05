@@ -13,52 +13,47 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--t)}
 .pg{display:none;flex-direction:column;height:100%}.pg.on{display:flex}
-
-/* HOME */
 .hdr{padding:52px 20px 12px;padding-top:max(52px,calc(env(safe-area-inset-top)+16px));flex-shrink:0}
 .logo{font-size:27px;font-weight:800;letter-spacing:-.5px}
 .sub{font-size:13px;color:var(--m);margin-top:2px}
 .pill{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 12px;background:var(--s);border:1px solid var(--b);border-radius:10px;font-size:12px;color:var(--m)}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .lngs{display:flex;gap:6px;margin-top:9px}
-.lb{padding:7px 16px;border-radius:99px;border:1px solid var(--b);background:var(--s);color:var(--m);font-size:13px;font-family:inherit;cursor:pointer;transition:.15s}
+.lb{padding:7px 16px;border-radius:99px;border:1px solid var(--b);background:var(--s);color:var(--m);font-size:13px;font-family:inherit;cursor:pointer}
 .lb.on{background:#0c1f0c;color:var(--g);border-color:#1d3d1d;font-weight:600}
 .body{flex:1;overflow-y:auto;padding:6px 20px 120px;-webkit-overflow-scrolling:touch}
 .sec-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mm);margin:16px 0 6px 2px}
-.dk{display:flex;align-items:center;gap:11px;padding:12px;background:var(--s);border:1px solid var(--b);border-radius:12px;margin-bottom:6px;cursor:pointer;user-select:none;transition:background .1s,border-color .1s}
-.dk:active{background:#1a1a1a}.dk.on{background:#0c1f0c;border-color:#2d4d2d}
+.dk{display:flex;align-items:center;gap:11px;padding:12px;background:var(--s);border:1px solid var(--b);border-radius:12px;margin-bottom:6px;cursor:pointer;user-select:none}
+.dk.on{background:#0c1f0c;border-color:#2d4d2d}
 .dk-icon{width:36px;height:36px;border-radius:8px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .dk-info{flex:1;min-width:0}
 .dk-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dk-cnt{font-size:11px;color:var(--m);margin-top:1px}
-.dk-chk{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--b);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.1s}
+.dk-chk{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--b);flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .dk.on .dk-chk{background:var(--g);border-color:var(--g)}
 .tick{display:none}.dk.on .tick{display:block;width:5px;height:9px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg);margin-top:-1px}
-.bar{position:fixed;bottom:0;left:0;right:0;padding:10px 16px;padding-bottom:max(16px,calc(env(safe-area-inset-bottom)+10px));background:rgba(10,10,10,.96);border-top:1px solid var(--b);backdrop-filter:blur(16px);display:flex;gap:8px;align-items:center;transform:translateY(100%);transition:transform .22s cubic-bezier(.4,0,.2,1)}
+.bar{position:fixed;bottom:0;left:0;right:0;padding:10px 16px;padding-bottom:max(16px,calc(env(safe-area-inset-bottom)+10px));background:rgba(10,10,10,.96);border-top:1px solid var(--b);backdrop-filter:blur(16px);display:flex;gap:8px;align-items:center;transform:translateY(100%);transition:transform .22s}
 .bar.show{transform:none}
 .bar-info{flex:1;font-size:12px;color:var(--m)}.bar-info strong{color:var(--t);font-size:13px}
 .btn-ghost{padding:11px 13px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:13px;font-family:inherit;cursor:pointer}
-.btn-go{padding:11px 24px;background:var(--g);border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .1s}
-.btn-go:active{opacity:.85}
-
-/* PLAYER */
-.top{display:flex;align-items:center;padding:10px 16px;padding-top:max(10px,calc(env(safe-area-inset-top)+4px));border-bottom:1px solid var(--b);gap:8px;flex-shrink:0}
-.back{background:none;border:none;color:var(--m);font-size:14px;cursor:pointer;font-family:inherit;padding:3px 0;white-space:nowrap}
-.pl-title{flex:1;text-align:center;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.btn-go{padding:11px 24px;background:var(--g);border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.top{display:flex;align-items:center;padding:10px 16px;padding-top:max(10px,calc(env(safe-area-inset-top)+4px));border-bottom:1px solid var(--b);gap:8px;flex-shrink:0;min-height:48px}
+.back{background:none;border:none;color:var(--m);font-size:14px;cursor:pointer;font-family:inherit;padding:4px 0}
+.pl-title{flex:1;text-align:center;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .pl-ctr{font-size:12px;color:var(--m);white-space:nowrap}
 .content{flex:1;overflow-y:auto;padding:14px 20px 16px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
-.badge{align-self:flex-start;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:10px;flex-shrink:0}
+.badge{align-self:flex-start;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-bottom:10px}
 .bq{background:#0c1f0c;color:var(--g);border:1px solid #1d3d1d}
 .ba{background:#0d0d20;color:var(--p);border:1px solid #1a1a38}
 .bp{background:var(--s);color:var(--mm);border:1px solid var(--b)}
 .row{padding:8px 0;border-bottom:1px solid #1a1a1a}.row:last-child{border-bottom:none}
-.lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mm);margin-bottom:3px;transition:color .2s}
+.lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mm);margin-bottom:3px;transition:color .15s}
 .lbl.lit{color:var(--y)}
 .val{font-size:14px;line-height:1.72}
 .val.dim{color:var(--m);font-size:13px;font-style:italic}
 .val.bold{font-weight:600;font-size:15px;color:#fff}
 .val.blue{color:var(--p);font-size:13px;line-height:1.65}
-.rep{display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
+.rep{display:inline-block;font-size:9px;padding:2px 7px;border-radius:99px;margin-left:5px;vertical-align:middle}
 .rep.new{background:#0c1f0c;color:var(--g);border:1px solid #1d3d1d}
 .rep.r1{background:#0d0d20;color:var(--p);border:1px solid #1a1a38}
 .rep.r2{background:#1a100c;color:var(--y);border:1px solid #3d2d1d}
@@ -69,38 +64,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .tags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:4px}
 .tag{font-size:10px;padding:3px 9px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)}
 .tts-tag{font-size:10px;padding:3px 9px;border-radius:99px;background:#0c1f0c;border:1px solid #1d3d1d;color:var(--g)}
-.spkbar{padding:8px 16px;background:#0a150a;border-top:1px solid #1a3a1a;display:flex;align-items:center;gap:8px;min-height:34px;flex-shrink:0}
+.spkbar{padding:8px 16px;background:#0a150a;border-top:1px solid #1a3a1a;display:flex;align-items:center;gap:8px;min-height:36px;flex-shrink:0}
 .spkdot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 1.3s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-.spktxt{font-size:11px;color:var(--g);flex:1}
-.prog{width:60px;height:2px;background:#1a3a1a;border-radius:2px;overflow:hidden}
-.progfill{height:100%;background:var(--g);width:0%;transition:width linear}
+.spktxt{font-size:11px;color:var(--g);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prog{width:60px;height:2px;background:#1a3a1a;border-radius:2px;overflow:hidden;flex-shrink:0}
+.progfill{height:100%;background:var(--g);width:0%}
 .ctrl{padding:10px 16px;padding-bottom:max(16px,calc(env(safe-area-inset-bottom)+10px));border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
-.sp-btn{padding:11px 12px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:12px;font-family:inherit;cursor:pointer}
-.play-btn{flex:1;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .1s}
-.play-btn:active{opacity:.85}
-.skip-btn{padding:11px 13px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:13px;font-family:inherit;cursor:pointer}
+.sp-btn{padding:12px 14px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;min-width:58px;text-align:center}
+.sp-btn.hi{color:var(--y);border-color:#3d2d1d;background:#1a100c}
+.play-btn{flex:1;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+.skip-btn{padding:12px 14px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:14px;font-family:inherit;cursor:pointer}
 </style>
 </head>
 <body>
 
-<!-- HOME -->
 <div class="pg on" id="pgHome">
   <div class="hdr">
     <div class="logo">Flashcards</div>
     <div class="sub">Vaelg decks og tryk Afspil</div>
     <div class="pill">
-      <div class="dot" id="statusDot" style="background:var(--y)"></div>
-      <span id="statusTxt">Indlaeder...</span>
+      <div class="sdot" id="sDot" style="background:var(--y)"></div>
+      <span id="sTxt">Indlaeder...</span>
     </div>
     <div class="lngs">
       <button class="lb on" id="btnDA" onclick="setLang('da')">Dansk</button>
-      <button class="lb" id="btnEN" onclick="setLang('en')">English</button>
+      <button class="lb"    id="btnEN" onclick="setLang('en')">English</button>
     </div>
   </div>
-  <div class="body">
-    <div id="deckSections"></div>
-  </div>
+  <div class="body" id="deckSections"></div>
   <div class="bar" id="bar">
     <div class="bar-info" id="barInfo"></div>
     <button class="btn-ghost" onclick="clearSel()">Ryd</button>
@@ -108,23 +100,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
 </div>
 
-<!-- PLAYER -->
 <div class="pg" id="pgPlay">
   <div class="top">
-    <button class="back" onclick="goHome()">&#8592; Decks</button>
+    <button class="back" onclick="goHome()">Tilbage</button>
     <div class="pl-title" id="plTitle"></div>
     <div class="pl-ctr" id="plCtr">0/0</div>
   </div>
   <div class="content" id="plContent">
     <div class="idle" id="idleView">
       <div class="idle-icon">&#9654;</div>
-      <div class="idle-h">Klar til afspilning</div>
-      <div class="idle-s">Hvert kort gentages 3 gange med stigende interval — videnskabeligt optimeret</div>
+      <div class="idle-h" id="idleH">Klar til afspilning</div>
+      <div class="idle-s">Hvert kort laeses op 4 gange med stigende interval</div>
       <div class="tags" id="idleTags"></div>
       <div class="tts-tag" id="ttsTag">Google TTS</div>
     </div>
     <div id="cardView" style="display:none">
-      <div class="badge bp" id="cardBadge">...</div>
+      <div class="badge bp" id="cBadge">...</div>
       <div class="row"><div class="lbl" id="lQ">Spoergsmaal</div><div class="val" id="vQ"></div></div>
       <div class="row"><div class="lbl" id="lC">Kontekst</div><div class="val dim" id="vC"></div></div>
       <div class="row" id="rE" style="display:none"><div class="lbl" id="lE">Essens</div><div class="val bold" id="vE"></div></div>
@@ -136,431 +127,300 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
   <div class="spkbar" id="spkbar" style="display:none">
     <div class="spkdot"></div>
-    <div class="spktxt" id="spktxt">Laeder op...</div>
+    <div class="spktxt" id="spktxt">...</div>
     <div class="prog"><div class="progfill" id="progfill"></div></div>
   </div>
   <div class="ctrl">
     <button class="sp-btn" id="spdBtn" onclick="nextSpd()">1.0x</button>
     <button class="play-btn" id="mainBtn" onclick="togglePlay()">Afspil</button>
-    <button class="skip-btn" onclick="skipCard()">Skip &#8250;</button>
+    <button class="skip-btn" onclick="skipCard()">Skip</button>
   </div>
 </div>
 
-<!-- ResponsiveVoice Google TTS -->
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <script>
-// ── KONFIGURATION ────────────────────────────────────────────────
-var TS   = "1777974630";         // cache-buster, erstattes af sync.py
-var LANG = "da";             // aktiv sproeg
-// Google TTS stemmer via ResponsiveVoice
-var VOICES = {
-  da: "Danish Female",       // Google Translate dansk kvinde
-  en: "UK English Female"    // Google Translate engelsk kvinde
-};
+var TS="1777975336";
+var LANG="da";
+var VOICES={da:"Danish Female",en:"UK English Female"};
+var SPEEDS=[0.8,1.0,1.2,1.5];
+var spdI=1;
+var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
+var META=[],CACHE={},sel=new Set();
+var queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null;
+var rvOK=false;
 
-// ── SRS (Spaced Repetition System) ──────────────────────────────
-// Eksponentiel spacing baseret paa Ebbinghaus + Cepeda et al. 2008
-// Interval-formel: base * factor^pass (antal andre kort imellem)
-var SRS_BASE   = 7;   // foerste gensyn: 7 kort (~2.5 min ved 22s/kort)
-var SRS_FACTOR = 2.0; // vaekstfaktor: 7 -> 14 -> 28
-var SRS_REPS   = 3;   // antal gentagelser per kort per session
-var SRS_JITTER = 2;   // +/- jitter saa kort ikke klumper
+// Indlaes ResponsiveVoice
+(function(){
+  var s=document.createElement("script");
+  s.src="https://code.responsivevoice.org/responsivevoice.js?key=FREE";
+  s.onload=function(){
+    if(typeof responsiveVoice!=="undefined"){
+      responsiveVoice.init();
+      // Test om dansk stemme virker
+      rvOK=true;
+    }
+  };
+  document.head.appendChild(s);
+})();
 
-// ── TILSTAND ─────────────────────────────────────────────────────
-var META  = [];
-var CACHE = {};
-var sel   = new Set();
-var queue = [], qIdx = 0, curItem = null;
-var playing = false;
-var speeds = [0.8, 1.0, 1.2, 1.5], spdI = 1;
-var tmr = null;
+function G(id){return document.getElementById(id);}
+function show(id){G(id).style.display="block";}
+function hide(id){G(id).style.display="none";}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
-// ── INDLAESNING ──────────────────────────────────────────────────
-function $ (id) { return document.getElementById(id); }
-
-fetch("./decks.json?v=" + TS)
-  .then(function(r) {
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return r.json();
-  })
-  .then(function(data) {
-    META = data.decks || [];
-    var tot = 0;
-    for (var i = 0; i < META.length; i++) tot += META[i].n;
-    $("statusDot").style.background = "var(--g)";
-    $("statusTxt").textContent = tot + " kort klar \u2014 Google TTS";
-    renderAll();
+// Indlaes decks
+fetch("./decks.json?v="+TS)
+  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  .then(function(d){
+    META=d.decks||[];
+    var tot=META.reduce(function(a,x){return a+x.n;},0);
+    G("sDot").style.background="var(--g)";
+    G("sTxt").textContent=tot+" kort klar";
+    renderDecks();
     preloadAll();
   })
-  .catch(function(e) {
-    $("statusDot").style.background = "var(--r)";
-    $("statusTxt").textContent = "Fejl: " + e.message + " \u2014 koer sync.py";
+  .catch(function(e){
+    G("sDot").style.background="var(--r)";
+    G("sTxt").textContent="Fejl: koer sync.py ("+e.message+")";
   });
 
-function preloadAll() {
-  var i = 0;
-  function next() {
-    if (i >= META.length) return;
-    var did = META[i++].id;
-    if (CACHE[did]) { next(); return; }
-    fetch("./cards/" + did + ".json?v=" + TS)
-      .then(function(r) { return r.json(); })
-      .then(function(raw) {
-        CACHE[did] = raw.map(expand);
-        setTimeout(next, 70);
-      })
-      .catch(function() { setTimeout(next, 300); });
-  }
-  setTimeout(next, 500);
+function preloadAll(){
+  var i=0;
+  (function next(){
+    if(i>=META.length)return;
+    var did=META[i++].id;
+    if(CACHE[did]){next();return;}
+    fetch("./cards/"+did+".json?v="+TS)
+      .then(function(r){return r.json();})
+      .then(function(raw){CACHE[did]=raw.map(expand);setTimeout(next,70);})
+      .catch(function(){setTimeout(next,300);});
+  })();
+}
+function expand(c){return{spg:c[0],ctx:c[1],essens:c[2],ref:c[3],udd:c[4],svar:c[5],src:c[6]};}
+function fetchDeck(did){
+  if(CACHE[did])return Promise.resolve(CACHE[did]);
+  return fetch("./cards/"+did+".json?v="+TS).then(function(r){return r.json();}).then(function(raw){CACHE[did]=raw.map(expand);return CACHE[did];});
 }
 
-function expand(c) {
-  return { spg:c[0], ctx:c[1], essens:c[2], ref:c[3], udd:c[4], svar:c[5], src:c[6] };
-}
-
-function fetchDeck(did) {
-  if (CACHE[did]) return Promise.resolve(CACHE[did]);
-  return fetch("./cards/" + did + ".json?v=" + TS)
-    .then(function(r) { return r.json(); })
-    .then(function(raw) { CACHE[did] = raw.map(expand); return CACHE[did]; });
-}
-
-// ── DECK-LISTE ───────────────────────────────────────────────────
-function renderAll() {
-  // Byg sektioner dynamisk fra META — virker med alle mapper automatisk
-  var sections = $("deckSections");
-  sections.innerHTML = "";
-
-  // Gruppér decks efter folder (foerste del af anki_deck stien)
-  var groups = {};
-  var order  = [];
-  META.forEach(function(d) {
-    // folder = d.folder sat af sync.py, fallback til d.cat
-    var g = d.folder || d.cat;
-    if (!groups[g]) { groups[g] = []; order.push(g); }
+function renderDecks(){
+  var sec=G("deckSections");sec.innerHTML="";
+  var groups={},order=[];
+  META.forEach(function(d){
+    var g=d.folder||d.cat;
+    if(!groups[g]){groups[g]=[];order.push(g);}
     groups[g].push(d);
   });
-
-  order.forEach(function(g) {
-    var decks = groups[g];
-    // Overskrift
-    var lbl = document.createElement("div");
-    lbl.className = "sec-lbl";
-    lbl.textContent = decks[0].folderLabel || g;
-    sections.appendChild(lbl);
-
-    // Container
-    var container = document.createElement("div");
-    sections.appendChild(container);
-
-    decks.forEach(function(d) {
-      var div = document.createElement("div");
-      div.className = "dk";
-      div.id = "dk_" + d.id;
-      div.innerHTML =
-        '<div class="dk-icon">' + d.icon + '</div>' +
-        '<div class="dk-info"><div class="dk-name">' + esc(d.name) + '</div>' +
-        '<div class="dk-cnt">' + d.n + ' kort</div></div>' +
-        '<div class="dk-chk"><div class="tick"></div></div>';
-      div.addEventListener("click", function() { toggleDeck(d.id); });
-      container.appendChild(div);
+  if(!order.length){sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks fundet \u2014 koer sync.py</div>';return;}
+  order.forEach(function(g){
+    var decks=groups[g];
+    var lbl=document.createElement("div");lbl.className="sec-lbl";lbl.textContent=decks[0].folderLabel||g;sec.appendChild(lbl);
+    decks.forEach(function(d){
+      var div=document.createElement("div");div.className="dk";div.id="dk_"+d.id;
+      div.innerHTML='<div class="dk-icon">'+d.icon+'</div><div class="dk-info"><div class="dk-name">'+esc(d.name)+'</div><div class="dk-cnt">'+d.n+' kort</div></div><div class="dk-chk"><div class="tick"></div></div>';
+      div.addEventListener("click",function(){toggleDeck(d.id);});
+      sec.appendChild(div);
     });
   });
 }
 
-function toggleDeck(did) {
-  if (sel.has(did)) sel.delete(did); else sel.add(did);
-  var el = $("dk_" + did);
-  if (el) el.classList.toggle("on", sel.has(did));
-  updateBar();
+function toggleDeck(did){if(sel.has(did))sel.delete(did);else sel.add(did);G("dk_"+did).classList.toggle("on",sel.has(did));updateBar();}
+function updateBar(){
+  var n=sel.size;G("bar").classList.toggle("show",n>0);
+  var tot=0;sel.forEach(function(did){var d=findM(did);if(d)tot+=d.n;});
+  G("barInfo").innerHTML="<strong>"+n+" deck"+(n>1?"s":"")+"</strong> &middot; "+tot+" kort";
+}
+function clearSel(){sel.forEach(function(did){G("dk_"+did).classList.remove("on");});sel.clear();updateBar();}
+function setLang(l){
+  LANG=l;G("btnDA").classList.toggle("on",l==="da");G("btnEN").classList.toggle("on",l==="en");
+  G("ttsTag").textContent="Google TTS \u2014 "+(l==="da"?"Dansk stemme":"English voice");
+}
+function findM(did){for(var i=0;i<META.length;i++)if(META[i].id===did)return META[i];return null;}
+
+// SRS
+function srsIv(pass){return Math.round(SRS_BASE*Math.pow(SRS_FACTOR,pass));}
+function buildQ(cards){
+  var arr=cards.slice();
+  for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+  queue=arr.map(function(c){return{card:c,pass:0};});qIdx=0;
+}
+function schedRep(item){
+  if(item.pass>=SRS_REPS)return;
+  var iv=srsIv(item.pass);
+  var jit=Math.floor(Math.random()*(SRS_JITTER*2+1))-SRS_JITTER;
+  var pos=Math.max(qIdx+1,Math.min(qIdx+iv+jit,queue.length));
+  queue.splice(pos,0,{card:item.card,pass:item.pass+1});
 }
 
-function updateBar() {
-  var n = sel.size;
-  $("bar").classList.toggle("show", n > 0);
-  var tot = 0;
-  sel.forEach(function(did) {
-    var d = findMeta(did);
-    if (d) tot += d.n;
-  });
-  $("barInfo").innerHTML = "<strong>" + n + " deck" + (n > 1 ? "s" : "") + "</strong> &middot; " + tot + " kort";
-}
-
-function clearSel() {
-  sel.forEach(function(did) {
-    var el = $("dk_" + did);
-    if (el) el.classList.remove("on");
-  });
-  sel.clear();
-  updateBar();
-}
-
-function setLang(l) {
-  LANG = l;
-  $("btnDA").classList.toggle("on", l === "da");
-  $("btnEN").classList.toggle("on", l === "en");
-  $("ttsTag").textContent = "Google TTS \u2014 " + (l === "da" ? "Dansk stemme" : "English voice");
-}
-
-// ── SRS KOE ──────────────────────────────────────────────────────
-function srsInterval(pass) {
-  return Math.round(SRS_BASE * Math.pow(SRS_FACTOR, pass));
-}
-
-function buildQueue(allCards) {
-  // Fisher-Yates bland
-  var arr = allCards.slice();
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-  }
-  queue = arr.map(function(c) { return { card: c, pass: 0 }; });
-  qIdx = 0;
-}
-
-function scheduleRepeat(item) {
-  if (item.pass >= SRS_REPS) return; // faerdigt
-  var interval = srsInterval(item.pass);
-  var jitter = Math.floor(Math.random() * (SRS_JITTER * 2 + 1)) - SRS_JITTER;
-  var pos = qIdx + interval + jitter;
-  pos = Math.max(qIdx + 1, Math.min(pos, queue.length));
-  queue.splice(pos, 0, { card: item.card, pass: item.pass + 1 });
-}
-
-// ── AFSPILNING ───────────────────────────────────────────────────
-function startPlay() {
-  var ids = Array.from(sel);
-  if (!ids.length) return;
-  var btn = $("btnPlay");
-  var missing = ids.filter(function(id) { return !CACHE[id]; });
-  if (missing.length) { btn.textContent = "Indlaeder..."; btn.disabled = true; }
-
-  Promise.all(ids.map(function(did) {
-    return fetchDeck(did).catch(function() { return []; });
-  })).then(function(results) {
-    btn.textContent = "Afspil"; btn.disabled = false;
-    var all = [];
-    ids.forEach(function(did, i) {
-      var d = findMeta(did);
-      if (d) results[i].forEach(function(c) {
-        all.push(Object.assign({}, c, { _d: d.name, _icon: d.icon, _did: did }));
+function startPlay(){
+  var ids=Array.from(sel);if(!ids.length)return;
+  var btn=G("btnPlay");
+  if(ids.filter(function(id){return!CACHE[id];}).length){btn.textContent="Indlaeder...";btn.disabled=true;}
+  Promise.all(ids.map(function(did){return fetchDeck(did).catch(function(){return[];});}))
+    .then(function(results){
+      btn.textContent="Afspil";btn.disabled=false;
+      var all=[];
+      ids.forEach(function(did,i){
+        var d=findM(did);
+        if(d)results[i].forEach(function(c){all.push(Object.assign({},c,{_d:d.name,_icon:d.icon}));});
       });
+      if(!all.length)return;
+      buildQ(all);playing=false;
+      G("pgHome").classList.remove("on");G("pgPlay").classList.add("on");
+      G("plTitle").textContent=ids.length===1?(findM(ids[0])||{name:""}).name:"Blandet \u00b7 "+ids.length+" decks";
+      G("idleH").textContent="Klar til afspilning";
+      G("idleTags").innerHTML=ids.map(function(did){var d=findM(did);return d?'<span class="tag">'+d.icon+" "+esc(d.name)+"</span>":"";}).join("");
+      G("ttsTag").textContent="Google TTS \u2014 "+(LANG==="da"?"Dansk stemme":"English voice");
+      G("idleView").style.display="flex";hide("cardView");hide("spkbar");
+      G("mainBtn").textContent="Afspil";
+      updateCtr();
     });
-    if (!all.length) return;
-    buildQueue(all);
-    playing = false;
-    $("pgHome").classList.remove("on");
-    $("pgPlay").classList.add("on");
-    $("plTitle").textContent = ids.length === 1
-      ? (findMeta(ids[0]) || { name: "" }).name
-      : "Blandet \u00b7 " + ids.length + " decks";
-    $("idleTags").innerHTML = ids.map(function(did) {
-      var d = findMeta(did);
-      return d ? '<span class="tag">' + d.icon + " " + esc(d.name) + "</span>" : "";
-    }).join("");
-    $("ttsTag").textContent = "Google TTS \u2014 " + (LANG === "da" ? "Dansk stemme" : "English voice");
-    showIdle();
-    updateCtr();
-  });
 }
 
-function goHome() {
-  playing = false; cancelAll();
-  $("pgPlay").classList.remove("on");
-  $("pgHome").classList.add("on");
-}
+function goHome(){playing=false;stopAll();G("pgPlay").classList.remove("on");G("pgHome").classList.add("on");}
 
-function showIdle() {
-  $("idleView").style.display = "flex";
-  $("cardView").style.display = "none";
-  $("spkbar").style.display = "none";
-  $("mainBtn").textContent = "Afspil";
-}
-
-function togglePlay() {
-  if (playing) {
-    playing = false; cancelAll();
-    $("mainBtn").textContent = "Fortsaet";
-    $("spkbar").style.display = "none";
-  } else {
-    if (qIdx >= queue.length) {
-      // Session slut — start forfra
-      buildQueue(queue.map(function(it) { return it.card; }));
+function togglePlay(){
+  if(playing){
+    playing=false;stopAll();G("mainBtn").textContent="Fortsaet";hide("spkbar");
+  }else{
+    if(qIdx>=queue.length){
+      var orig={};var cards=[];
+      queue.forEach(function(it){if(!orig[it.card.spg]){orig[it.card.spg]=true;cards.push(it.card);}});
+      buildQ(cards);
     }
-    playing = true;
-    $("mainBtn").textContent = "Pause";
-    $("idleView").style.display = "none";
-    $("cardView").style.display = "block";
+    playing=true;G("mainBtn").textContent="Pause";
+    G("idleView").style.display="none";show("cardView");
     showCard();
   }
 }
 
-function skipCard() {
-  cancelAll();
-  if (!playing) return;
-  if (curItem) scheduleRepeat(curItem);
-  qIdx++;
-  showCard();
+function skipCard(){
+  stopAll();if(!playing)return;
+  if(curItem){schedRep(curItem);qIdx++;}
+  updateCtr();showCard();
 }
 
-function updateCtr() {
-  $("plCtr").textContent = qIdx + "/" + queue.length;
+function nextSpd(){
+  spdI=(spdI+1)%SPEEDS.length;
+  G("spdBtn").textContent=SPEEDS[spdI].toFixed(1)+"x";
+  G("spdBtn").classList.toggle("hi",spdI!==1);
 }
 
-function showCard() {
-  if (qIdx >= queue.length) {
-    playing = false;
-    $("idleView").style.display = "flex";
-    $("cardView").style.display = "none";
-    $("spkbar").style.display = "none";
-    $("idleView").querySelector(".idle-h").textContent = "Session faerdig!";
-    $("idleView").querySelector(".idle-s").textContent = "Alle kort er gennemgaaet. Tryk Afspil for at starte forfra.";
-    $("mainBtn").textContent = "Start forfra";
+function updateCtr(){G("plCtr").textContent=qIdx+"/"+queue.length;}
+
+function showCard(){
+  if(!playing)return;
+  if(qIdx>=queue.length){
+    playing=false;stopAll();
+    G("mainBtn").textContent="Start forfra";
+    hide("cardView");hide("spkbar");
+    G("idleView").style.display="flex";
+    G("idleH").textContent="Session faerdig!";
     return;
   }
-  curItem = queue[qIdx];
-  updateCtr();
-  var c = curItem.card;
+  curItem=queue[qIdx];updateCtr();
+  var c=curItem.card,pass=curItem.pass;
+  var rC=["new","r1","r2","r3"][Math.min(pass,3)];
+  var rL=["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(pass,3)];
+  G("vQ").innerHTML=esc(c.spg)+' <span class="rep '+rC+'">'+rL+"</span>";
+  G("vC").textContent=c.ctx;G("vE").textContent=c.essens;G("vR").textContent=c.ref;
+  G("vU").textContent=c.udd;G("vS").textContent=c.svar;
+  G("vK").textContent=(c._d?c._d+" \u2014 ":"")+c.src;
+  ["rE","rR","rU","rS","rK"].forEach(function(id){hide(id);});
+  unlit();setBadge("q");G("plContent").scrollTop=0;
 
-  // Badge med gensyn-indikator
-  var repClass = ["new","r1","r2","r3"][Math.min(curItem.pass, 3)];
-  var repLbl   = ["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(curItem.pass, 3)];
-  $("vQ").innerHTML = esc(c.spg) + '<span class="rep ' + repClass + '">' + repLbl + '</span>';
-  $("vC").textContent = c.ctx;
-  $("vE").textContent = c.essens;
-  $("vR").textContent = c.ref;
-  $("vU").textContent = c.udd;
-  $("vS").textContent = c.svar;
-  $("vK").textContent = (c._d ? c._d + " \u2014 " : "") + c.src;
-  ["rE","rR","rU","rS","rK"].forEach(function(id) { $(id).style.display = "none"; });
-  unlit();
-  setBadge("q");
-  $("plContent").scrollTop = 0;
-
-  // Afspil sekvens
-  tts(c.spg, "lQ", function() {
-  tts("Kontekst: " + c.ctx, "lC", function() {
-  pause(3000, function() {
-    setBadge("a");
-    show("rE"); tts(c.essens, "lE", function() {
-    show("rR"); tts("Refleksionsspoergsmaal: " + c.ref, "lR", function() {
-    show("rU"); scrollTo("rU");
-    tts(c.udd, "lU", function() {
-    show("rS"); scrollTo("rS");
-    tts("Svar: " + c.svar, "lS", function() {
-    show("rK");
-    tts("Kilde: " + c.src, "lK", function() {
-      scheduleRepeat(curItem);
-      qIdx++;
-      pause(3500, function() { showCard(); });
-    });
-    });
-    });
-    });
-    });
-  });
-  });
-  });
+  // Komplet sekvens — laes ALT der vises paa siden
+  runSeq([
+    {text:"Spoergsmaal: "+c.spg,    lid:"lQ"},
+    {text:"Kontekst: "+c.ctx,       lid:"lC"},
+    {wait:3000,fn:function(){setBadge("a");}},
+    {text:c.essens,                 lid:"lE",show:"rE"},
+    {text:"Refleksion: "+c.ref,     lid:"lR",show:"rR"},
+    {text:c.udd,                    lid:"lU",show:"rU",scroll:"rU"},
+    {text:"Svar: "+c.svar,          lid:"lS",show:"rS",scroll:"rS"},
+    {text:"Kilde: "+c.src,          lid:"lK",show:"rK"},
+    {wait:3500,fn:function(){schedRep(curItem);qIdx++;updateCtr();showCard();}}
+  ],0);
 }
 
-// ── TTS ──────────────────────────────────────────────────────────
-function tts(text, lid, done) {
-  if (!playing) return;
-  cancelAll();
-  $("spkbar").style.display = "flex";
-  $("spktxt").textContent = "Laeder op...";
-  if (lid) lit(lid);
-  var words = text.split(/\s+/).length;
-  var ms = Math.max(700, (words / (130 * speeds[spdI])) * 60000);
-  animBar(ms);
-
-  if (typeof responsiveVoice !== "undefined" && responsiveVoice.voiceSupport()) {
-    // Google TTS via ResponsiveVoice
-    responsiveVoice.speak(text, VOICES[LANG], {
-      rate:   speeds[spdI],
-      pitch:  1.0,
-      volume: 1.0,
-      onstart: function() { $("spktxt").textContent = "Laeder op..."; },
-      onend: function() {
-        if (!playing) return;
-        clrBar();
-        if (done) tmr = setTimeout(done, 180);
-      },
-      onerror: function() {
-        clrBar();
-        if (playing && done) tmr = setTimeout(done, 400);
-      }
-    });
-  } else {
-    // Fallback: browser Speech Synthesis
-    var u = new SpeechSynthesisUtterance(text);
-    u.rate = speeds[spdI];
-    u.lang = LANG === "da" ? "da-DK" : "en-GB";
-    var called = false;
-    var fin = function() {
-      if (called) return; called = true;
-      clrBar();
-      if (playing && done) tmr = setTimeout(done, 180);
-    };
-    u.onend = fin; u.onerror = fin;
-    window.speechSynthesis.speak(u);
-    tmr = setTimeout(function() {
-      window.speechSynthesis.cancel(); fin();
-    }, ms * 2.5 + 3000);
+function runSeq(steps,i){
+  if(!playing||i>=steps.length)return;
+  var st=steps[i];
+  if(st.show)show(st.show);
+  if(st.scroll)G(st.scroll).scrollIntoView({behavior:"smooth",block:"nearest"});
+  if(st.wait!==undefined){
+    if(st.fn)st.fn();
+    unlit();hide("spkbar");
+    seqTmr=setTimeout(function(){runSeq(steps,i+1);},st.wait);
+    return;
   }
+  lit(st.lid);
+  tts(st.text,function(){runSeq(steps,i+1);});
 }
 
-function pause(ms, done) {
-  if (!playing) return;
-  cancelAll();
-  $("spkbar").style.display = "none";
-  unlit();
-  tmr = setTimeout(function() { if (playing && done) done(); }, ms);
+// TTS — Google TTS via ResponsiveVoice, fallback til browser
+function tts(text,onDone){
+  if(!playing)return;
+  var spd=SPEEDS[spdI];
+  var ms=Math.max(900,(text.trim().split(/\s+/).length/(130*spd))*60000);
+  G("spkbar").style.display="flex";
+  G("spktxt").textContent=text.substring(0,55)+(text.length>55?"...":"");
+  startProg(ms);
+  var done=once(function(){stopProg();if(playing&&onDone)seqTmr=setTimeout(onDone,120);});
+
+  if(rvOK&&typeof responsiveVoice!=="undefined"){
+    try{
+      responsiveVoice.speak(text,VOICES[LANG],{
+        rate:spd,pitch:1.0,volume:1.0,
+        onend:done,
+        onerror:function(){
+          // Fallback til browser TTS
+          bTTS(text,spd,done);
+        }
+      });
+      return;
+    }catch(e){/* fald igennem til browser */}
+  }
+  bTTS(text,spd,done);
 }
 
-function cancelAll() {
-  if (tmr) { clearTimeout(tmr); tmr = null; }
-  if (typeof responsiveVoice !== "undefined") responsiveVoice.cancel();
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
+function bTTS(text,spd,done){
+  if(!window.speechSynthesis){setTimeout(done,1000);return;}
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang=LANG==="da"?"da-DK":"en-GB";u.rate=spd;u.pitch=1.0;
+  u.onend=done;u.onerror=done;
+  window.speechSynthesis.speak(u);
 }
 
-function clrBar() {
-  var f = $("progfill");
-  f.style.transition = "none"; f.style.width = "0%";
-}
-function animBar(ms) {
-  clrBar();
-  var f = $("progfill");
-  setTimeout(function() {
-    f.style.transition = "width " + ms + "ms linear";
-    f.style.width = "100%";
-  }, 20);
-}
-function nextSpd() {
-  spdI = (spdI + 1) % speeds.length;
-  $("spdBtn").textContent = speeds[spdI].toFixed(1) + "x";
+function once(fn){var c=false;return function(){if(!c){c=true;fn();}};}
+
+function stopAll(){
+  if(seqTmr){clearTimeout(seqTmr);seqTmr=null;}
+  if(rvOK&&typeof responsiveVoice!=="undefined"){try{responsiveVoice.cancel();}catch(e){}}
+  if(window.speechSynthesis){try{window.speechSynthesis.cancel();}catch(e){}}
+  stopProg();
 }
 
-// ── UI HELPERS ───────────────────────────────────────────────────
-function lit(id) {
-  document.querySelectorAll(".lbl").forEach(function(l) { l.classList.remove("lit"); });
-  var el = $(id); if (el) el.classList.add("lit");
+var pTmr=null;
+function startProg(ms){
+  var f=G("progfill");f.style.transition="none";f.style.width="0%";
+  if(pTmr)clearTimeout(pTmr);
+  pTmr=setTimeout(function(){f.style.transition="width "+ms+"ms linear";f.style.width="100%";},30);
 }
-function unlit() { document.querySelectorAll(".lbl").forEach(function(l) { l.classList.remove("lit"); }); }
-function show(id) { $(id).style.display = "block"; }
-function scrollTo(id) { $(id).scrollIntoView({ behavior: "smooth", block: "nearest" }); }
-function setBadge(ph) {
-  var b = $("cardBadge");
-  if (ph === "q") { b.className = "badge bq"; b.textContent = "Spoergsmaal"; }
-  else if (ph === "a") { b.className = "badge ba"; b.textContent = "Svar"; }
-  else { b.className = "badge bp"; b.textContent = "..."; }
+function stopProg(){
+  if(pTmr){clearTimeout(pTmr);pTmr=null;}
+  var f=G("progfill");f.style.transition="none";f.style.width="0%";
 }
-function findMeta(did) {
-  for (var i = 0; i < META.length; i++) if (META[i].id === did) return META[i];
-  return null;
+
+function lit(id){
+  document.querySelectorAll(".lbl").forEach(function(l){l.classList.remove("lit");});
+  if(id&&G(id))G(id).classList.add("lit");
 }
-function esc(s) {
-  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function unlit(){document.querySelectorAll(".lbl").forEach(function(l){l.classList.remove("lit");});}
+function setBadge(ph){
+  var b=G("cBadge");
+  if(ph==="q"){b.className="badge bq";b.textContent="Spoergsmaal";}
+  else if(ph==="a"){b.className="badge ba";b.textContent="Svar";}
+  else{b.className="badge bp";b.textContent="...";}
 }
 </script>
 </body>
