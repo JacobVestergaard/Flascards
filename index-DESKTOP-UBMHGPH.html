@@ -63,24 +63,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 .idle-s{font-size:12px;color:var(--m);line-height:1.65;max-width:260px}
 .tags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:4px}
 .tag{font-size:10px;padding:3px 9px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)}
-.tts-tag{font-size:10px;padding:3px 9px;border-radius:99px;color:var(--g);border:1px solid #1d3d1d;background:#0c1f0c;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tts-tag{font-size:10px;padding:3px 9px;border-radius:99px;background:#0c1f0c;border:1px solid #1d3d1d;color:var(--g)}
 .spkbar{padding:8px 16px;background:#0a150a;border-top:1px solid #1a3a1a;display:flex;align-items:center;gap:8px;min-height:36px;flex-shrink:0}
 .spkdot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 1.3s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 .spktxt{font-size:11px;color:var(--g);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prog{width:60px;height:2px;background:#1a3a1a;border-radius:2px;overflow:hidden;flex-shrink:0}
 .progfill{height:100%;background:var(--g);width:0%}
-.ctrl{padding:10px 16px;padding-bottom:4px;border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
-.sp-btn{padding:11px 13px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;min-width:56px;text-align:center}
+.ctrl{padding:10px 16px;padding-bottom:max(16px,calc(env(safe-area-inset-bottom)+10px));border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
+.sp-btn{padding:12px 14px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;min-width:58px;text-align:center}
 .sp-btn.hi{color:var(--y);border-color:#3d2d1d;background:#1a100c}
 .play-btn{flex:1;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
-.skip-btn{padding:11px 13px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:14px;font-family:inherit;cursor:pointer}
-.pauses{display:flex;gap:8px;padding:8px 16px;padding-bottom:max(12px,calc(env(safe-area-inset-bottom)+8px));border-top:1px solid #181818;background:var(--bg);flex-shrink:0}
-.pslot{display:flex;align-items:center;gap:6px;flex:1}
-.plbl{font-size:10px;color:var(--mm);white-space:nowrap;flex-shrink:0}
-.pval{font-size:11px;min-width:26px;text-align:right;flex-shrink:0}
-.pval.g{color:var(--g)}.pval.p{color:var(--p)}
-input[type=range]{flex:1;height:3px;cursor:pointer}
+.skip-btn{padding:12px 14px;background:var(--s);border:1px solid var(--b);border-radius:10px;color:var(--m);font-size:14px;font-family:inherit;cursor:pointer}
 </style>
 </head>
 <body>
@@ -118,7 +112,7 @@ input[type=range]{flex:1;height:3px;cursor:pointer}
       <div class="idle-h" id="idleH">Klar til afspilning</div>
       <div class="idle-s">Hvert kort laeses op 4 gange med stigende interval</div>
       <div class="tags" id="idleTags"></div>
-      <div class="tts-tag" id="ttsTag">Indlaeder stemmer...</div>
+      <div class="tts-tag" id="ttsTag">Google TTS</div>
     </div>
     <div id="cardView" style="display:none">
       <div class="badge bp" id="cBadge">...</div>
@@ -141,108 +135,44 @@ input[type=range]{flex:1;height:3px;cursor:pointer}
     <button class="play-btn" id="mainBtn" onclick="togglePlay()">Afspil</button>
     <button class="skip-btn" onclick="skipCard()">Skip</button>
   </div>
-  <div class="pauses">
-    <div class="pslot">
-      <span class="plbl">Pause svar:</span>
-      <input type="range" id="p1r" min="1" max="10" value="3" step="1"
-             style="accent-color:var(--g)" oninput="PAUSE1=+this.value;G('p1v').textContent=this.value+'s'">
-      <span class="pval g" id="p1v">3s</span>
-    </div>
-    <div class="pslot">
-      <span class="plbl">Pause naeste:</span>
-      <input type="range" id="p2r" min="1" max="12" value="4" step="1"
-             style="accent-color:var(--p)" oninput="PAUSE2=+this.value;G('p2v').textContent=this.value+'s'">
-      <span class="pval p" id="p2v">4s</span>
-    </div>
-  </div>
 </div>
 
 <script>
-// ── KONFIGURATION ──────────────────────────────────────────────────────────────
-var TS      = "1778008506";
-var LANG    = "da";
-var SPEEDS  = [0.8, 1.0, 1.2, 1.5];
-var spdI    = 1;
-var PAUSE1  = 3;   // sekunder pause: spoergsmaal -> svar
-var PAUSE2  = 4;   // sekunder pause: efter kilde -> naeste kort
-
-// Labels der laeses op for hvert felt
-var LABELS = {
-  da: { spg:"Spoergsmaal", ctx:"Kontekst", essens:"Essens",
-        ref:"Refleksionsspoergsmaal", udd:"Uddybning",
-        svar:"Svar paa refleksion", src:"Kilde" },
-  en: { spg:"Question", ctx:"Context", essens:"Essence",
-        ref:"Reflection question", udd:"Elaboration",
-        svar:"Answer to reflection", src:"Source" }
-};
-
-// SRS (Ebbinghaus + Cepeda 2008)
-var SRS_BASE=7, SRS_FACTOR=2.0, SRS_REPS=3, SRS_JITTER=2;
-
-// ── TILSTAND ───────────────────────────────────────────────────────────────────
+var TS="1777975506";
+var LANG="da";
+var VOICES={da:"Danish Female",en:"UK English Female"};
+var SPEEDS=[0.8,1.0,1.2,1.5];
+var spdI=1;
+var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
 var META=[],CACHE={},sel=new Set();
 var queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null;
+var rvOK=false;
 
-// ── TTS STEMMER ───────────────────────────────────────────────────────────────
-var voiceDa = null;
-var voiceEn = null;
-var kaTimer = null;
-
-function pickVoices(){
-  if(!window.speechSynthesis) return;
-  var vs = window.speechSynthesis.getVoices();
-  if(!vs || !vs.length) return;
-  voiceDa = null;
-  var daTests = [
-    function(v){ return v.lang==="da-DK" && /google/i.test(v.name); },
-    function(v){ return v.lang==="da-DK" && /microsoft/i.test(v.name); },
-    function(v){ return /^da/i.test(v.lang); }
-  ];
-  for(var t=0; t<daTests.length && !voiceDa; t++)
-    for(var i=0; i<vs.length && !voiceDa; i++)
-      if(daTests[t](vs[i])) voiceDa = vs[i];
-  voiceEn = null;
-  var enTests = [
-    function(v){ return /^en/i.test(v.lang) && /google/i.test(v.name); },
-    function(v){ return /^en-GB/i.test(v.lang) && /microsoft/i.test(v.name); },
-    function(v){ return /^en-US/i.test(v.lang) && /microsoft/i.test(v.name); },
-    function(v){ return /^en-GB/i.test(v.lang); },
-    function(v){ return /^en-US/i.test(v.lang); },
-    function(v){ return /^en/i.test(v.lang); }
-  ];
-  for(var t=0; t<enTests.length && !voiceEn; t++)
-    for(var i=0; i<vs.length && !voiceEn; i++)
-      if(enTests[t](vs[i])) voiceEn = vs[i];
-  var dN = voiceDa ? voiceDa.name.substring(0,22) : "INGEN dansk installeret";
-  var eN = voiceEn ? voiceEn.name.substring(0,22) : "INGEN engelsk installeret";
-  G("ttsTag").textContent = "DA: "+dN+" | EN: "+eN;
-}
-if(window.speechSynthesis){
-  window.speechSynthesis.onvoiceschanged = pickVoices;
-  pickVoices(); setTimeout(pickVoices,200); setTimeout(pickVoices,800); setTimeout(pickVoices,2000);
-}
-function startKA(){
-  if(kaTimer) return;
-  kaTimer = setInterval(function(){
-    if(window.speechSynthesis && window.speechSynthesis.speaking){
-      window.speechSynthesis.pause(); window.speechSynthesis.resume();
+// Indlaes ResponsiveVoice
+(function(){
+  var s=document.createElement("script");
+  s.src="https://code.responsivevoice.org/responsivevoice.js?key=FREE";
+  s.onload=function(){
+    if(typeof responsiveVoice!=="undefined"){
+      responsiveVoice.init();
+      // Test om dansk stemme virker
+      rvOK=true;
     }
-  }, 10000);
-}
-function stopKA(){ if(kaTimer){clearInterval(kaTimer);kaTimer=null;} }
+  };
+  document.head.appendChild(s);
+})();
 
-// ── UTILS ──────────────────────────────────────────────────────────────────────
-function G(id){ return document.getElementById(id); }
-function show(id){ G(id).style.display="block"; }
-function hide(id){ G(id).style.display="none"; }
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function G(id){return document.getElementById(id);}
+function show(id){G(id).style.display="block";}
+function hide(id){G(id).style.display="none";}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
-// ── INDLAESNING ────────────────────────────────────────────────────────────────
+// Indlaes decks
 fetch("./decks.json?v="+TS)
-  .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
   .then(function(d){
-    META = d.decks||[];
-    var tot = META.reduce(function(a,x){return a+x.n;},0);
+    META=d.decks||[];
+    var tot=META.reduce(function(a,x){return a+x.n;},0);
     G("sDot").style.background="var(--g)";
     G("sTxt").textContent=tot+" kort klar";
     renderDecks();
@@ -256,7 +186,7 @@ fetch("./decks.json?v="+TS)
 function preloadAll(){
   var i=0;
   (function next(){
-    if(i>=META.length) return;
+    if(i>=META.length)return;
     var did=META[i++].id;
     if(CACHE[did]){next();return;}
     fetch("./cards/"+did+".json?v="+TS)
@@ -267,58 +197,50 @@ function preloadAll(){
 }
 function expand(c){return{spg:c[0],ctx:c[1],essens:c[2],ref:c[3],udd:c[4],svar:c[5],src:c[6]};}
 function fetchDeck(did){
-  if(CACHE[did]) return Promise.resolve(CACHE[did]);
-  return fetch("./cards/"+did+".json?v="+TS)
-    .then(function(r){return r.json();})
-    .then(function(raw){CACHE[did]=raw.map(expand);return CACHE[did];});
+  if(CACHE[did])return Promise.resolve(CACHE[did]);
+  return fetch("./cards/"+did+".json?v="+TS).then(function(r){return r.json();}).then(function(raw){CACHE[did]=raw.map(expand);return CACHE[did];});
 }
 
-// ── DECK-LISTE ─────────────────────────────────────────────────────────────────
 function renderDecks(){
-  var sec=G("deckSections"); sec.innerHTML="";
+  var sec=G("deckSections");sec.innerHTML="";
   var groups={},order=[];
   META.forEach(function(d){
     var g=d.folder||d.cat;
     if(!groups[g]){groups[g]=[];order.push(g);}
     groups[g].push(d);
   });
-  if(!order.length){
-    sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks. Koer sync.py</div>';
-    return;
-  }
+  if(!order.length){sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks fundet \u2014 koer sync.py</div>';return;}
   order.forEach(function(g){
     var decks=groups[g];
-    var lbl=document.createElement("div");
-    lbl.className="sec-lbl"; lbl.textContent=decks[0].folderLabel||g;
-    sec.appendChild(lbl);
+    var lbl=document.createElement("div");lbl.className="sec-lbl";lbl.textContent=decks[0].folderLabel||g;sec.appendChild(lbl);
     decks.forEach(function(d){
-      var div=document.createElement("div");
-      div.className="dk"; div.id="dk_"+d.id;
-      div.innerHTML='<div class="dk-icon">'+d.icon+'</div>'
-        +'<div class="dk-info"><div class="dk-name">'+esc(d.name)+'</div>'
-        +'<div class="dk-cnt">'+d.n+' kort</div></div>'
-        +'<div class="dk-chk"><div class="tick"></div></div>';
+      var div=document.createElement("div");div.className="dk";div.id="dk_"+d.id;
+      div.innerHTML='<div class="dk-icon">'+d.icon+'</div><div class="dk-info"><div class="dk-name">'+esc(d.name)+'</div><div class="dk-cnt">'+d.n+' kort</div></div><div class="dk-chk"><div class="tick"></div></div>';
       div.addEventListener("click",function(){toggleDeck(d.id);});
       sec.appendChild(div);
     });
   });
 }
+
 function toggleDeck(did){if(sel.has(did))sel.delete(did);else sel.add(did);G("dk_"+did).classList.toggle("on",sel.has(did));updateBar();}
 function updateBar(){
-  var n=sel.size; G("bar").classList.toggle("show",n>0);
-  var tot=0; sel.forEach(function(did){var d=findM(did);if(d)tot+=d.n;});
+  var n=sel.size;G("bar").classList.toggle("show",n>0);
+  var tot=0;sel.forEach(function(did){var d=findM(did);if(d)tot+=d.n;});
   G("barInfo").innerHTML="<strong>"+n+" deck"+(n>1?"s":"")+"</strong> &middot; "+tot+" kort";
 }
 function clearSel(){sel.forEach(function(did){G("dk_"+did).classList.remove("on");});sel.clear();updateBar();}
-function setLang(l){LANG=l;G("btnDA").classList.toggle("on",l==="da");G("btnEN").classList.toggle("on",l==="en");}
+function setLang(l){
+  LANG=l;G("btnDA").classList.toggle("on",l==="da");G("btnEN").classList.toggle("on",l==="en");
+  G("ttsTag").textContent="Google TTS \u2014 "+(l==="da"?"Dansk stemme":"English voice");
+}
 function findM(did){for(var i=0;i<META.length;i++)if(META[i].id===did)return META[i];return null;}
 
-// ── SRS ────────────────────────────────────────────────────────────────────────
+// SRS
 function srsIv(pass){return Math.round(SRS_BASE*Math.pow(SRS_FACTOR,pass));}
 function buildQ(cards){
   var arr=cards.slice();
   for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
-  queue=arr.map(function(c){return{card:c,pass:0};}); qIdx=0;
+  queue=arr.map(function(c){return{card:c,pass:0};});qIdx=0;
 }
 function schedRep(item){
   if(item.pass>=SRS_REPS)return;
@@ -328,49 +250,62 @@ function schedRep(item){
   queue.splice(pos,0,{card:item.card,pass:item.pass+1});
 }
 
-// ── AFSPILNING ─────────────────────────────────────────────────────────────────
 function startPlay(){
-  var ids=Array.from(sel); if(!ids.length)return;
+  var ids=Array.from(sel);if(!ids.length)return;
   var btn=G("btnPlay");
   if(ids.filter(function(id){return!CACHE[id];}).length){btn.textContent="Indlaeder...";btn.disabled=true;}
   Promise.all(ids.map(function(did){return fetchDeck(did).catch(function(){return[];});}))
     .then(function(results){
-      btn.textContent="Afspil"; btn.disabled=false;
+      btn.textContent="Afspil";btn.disabled=false;
       var all=[];
       ids.forEach(function(did,i){
         var d=findM(did);
         if(d)results[i].forEach(function(c){all.push(Object.assign({},c,{_d:d.name,_icon:d.icon}));});
       });
       if(!all.length)return;
-      buildQ(all); playing=false;
-      G("pgHome").classList.remove("on"); G("pgPlay").classList.add("on");
-      G("plTitle").textContent=ids.length===1?(findM(ids[0])||{name:""}).name:"Blandet "+ids.length+" decks";
+      buildQ(all);playing=false;
+      G("pgHome").classList.remove("on");G("pgPlay").classList.add("on");
+      G("plTitle").textContent=ids.length===1?(findM(ids[0])||{name:""}).name:"Blandet \u00b7 "+ids.length+" decks";
       G("idleH").textContent="Klar til afspilning";
       G("idleTags").innerHTML=ids.map(function(did){var d=findM(did);return d?'<span class="tag">'+d.icon+" "+esc(d.name)+"</span>":"";}).join("");
-      G("idleView").style.display="flex"; hide("cardView"); hide("spkbar");
+      G("ttsTag").textContent="Google TTS \u2014 "+(LANG==="da"?"Dansk stemme":"English voice");
+      G("idleView").style.display="flex";hide("cardView");hide("spkbar");
       G("mainBtn").textContent="Afspil";
       updateCtr();
     });
 }
+
 function goHome(){playing=false;stopAll();G("pgPlay").classList.remove("on");G("pgHome").classList.add("on");}
+
 function togglePlay(){
-  if(playing){playing=false;stopAll();G("mainBtn").textContent="Fortsaet";hide("spkbar");}
-  else{
+  if(playing){
+    playing=false;stopAll();G("mainBtn").textContent="Fortsaet";hide("spkbar");
+  }else{
     if(qIdx>=queue.length){
-      var orig={},cards=[];
+      var orig={};var cards=[];
       queue.forEach(function(it){if(!orig[it.card.spg]){orig[it.card.spg]=true;cards.push(it.card);}});
       buildQ(cards);
     }
-    playing=true; G("mainBtn").textContent="Pause";
-    G("idleView").style.display="none"; show("cardView");
+    playing=true;G("mainBtn").textContent="Pause";
+    G("idleView").style.display="none";show("cardView");
     showCard();
   }
 }
-function skipCard(){stopAll();if(!playing)return;if(curItem){schedRep(curItem);qIdx++;}updateCtr();showCard();}
-function nextSpd(){spdI=(spdI+1)%SPEEDS.length;G("spdBtn").textContent=SPEEDS[spdI].toFixed(1)+"x";G("spdBtn").classList.toggle("hi",spdI!==1);}
+
+function skipCard(){
+  stopAll();if(!playing)return;
+  if(curItem){schedRep(curItem);qIdx++;}
+  updateCtr();showCard();
+}
+
+function nextSpd(){
+  spdI=(spdI+1)%SPEEDS.length;
+  G("spdBtn").textContent=SPEEDS[spdI].toFixed(1)+"x";
+  G("spdBtn").classList.toggle("hi",spdI!==1);
+}
+
 function updateCtr(){G("plCtr").textContent=qIdx+"/"+queue.length;}
 
-// ── KORTVISNING ────────────────────────────────────────────────────────────────
 function showCard(){
   if(!playing)return;
   if(qIdx>=queue.length){
@@ -381,113 +316,105 @@ function showCard(){
     G("idleH").textContent="Session faerdig!";
     return;
   }
-  curItem=queue[qIdx]; updateCtr();
-  var c=curItem.card, pass=curItem.pass;
+  curItem=queue[qIdx];updateCtr();
+  var c=curItem.card,pass=curItem.pass;
   var rC=["new","r1","r2","r3"][Math.min(pass,3)];
   var rL=["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(pass,3)];
-  var L=LABELS[LANG];
-
   G("vQ").innerHTML=esc(c.spg)+' <span class="rep '+rC+'">'+rL+"</span>";
-  G("vC").textContent=c.ctx;
-  G("vE").textContent=c.essens;
-  G("vR").textContent=c.ref;
-  G("vU").textContent=c.udd;
-  G("vS").textContent=c.svar;
-  G("vK").textContent=(c._d?c._d+" - ":"")+c.src;
+  G("vC").textContent=c.ctx;G("vE").textContent=c.essens;G("vR").textContent=c.ref;
+  G("vU").textContent=c.udd;G("vS").textContent=c.svar;
+  G("vK").textContent=(c._d?c._d+" \u2014 ":"")+c.src;
   ["rE","rR","rU","rS","rK"].forEach(function(id){hide(id);});
-  unlit(); setBadge("q"); G("plContent").scrollTop=0;
+  unlit();setBadge("q");G("plContent").scrollTop=0;
 
-  // Komplet sekvens — ALT laeses op inkl. labels
-  // Brug teksterne direkte saa de laeses paa det valgte sprog
-  var steps=[
-    {speak: L.spg+": "+c.spg,       lid:"lQ"},
-    {speak: L.ctx+": "+c.ctx,        lid:"lC"},
-    {wait:  PAUSE1*1000,             fn:function(){setBadge("a");}},
-    {speak: L.essens+": "+c.essens,  lid:"lE", show:"rE",  skip:!c.essens},
-    {speak: L.ref+": "+c.ref,        lid:"lR", show:"rR",  skip:!c.ref},
-    {speak: L.udd+": "+c.udd,        lid:"lU", show:"rU",  scroll:"rU", skip:!c.udd},
-    {speak: L.svar+": "+c.svar,      lid:"lS", show:"rS",  scroll:"rS", skip:!c.svar},
-    {speak: L.src+": "+(c._d?c._d+". ":"")+c.src, lid:"lK", show:"rK"},
-    {wait:  PAUSE2*1000,             fn:function(){schedRep(curItem);qIdx++;updateCtr();showCard();}}
-  ];
-  runSeq(steps,0);
+  // Komplet sekvens — laes ALT der vises paa siden
+  runSeq([
+    {text:"Spoergsmaal: "+c.spg,    lid:"lQ"},
+    {text:"Kontekst: "+c.ctx,       lid:"lC"},
+    {wait:3000,fn:function(){setBadge("a");}},
+    {text:c.essens,                 lid:"lE",show:"rE"},
+    {text:"Refleksion: "+c.ref,     lid:"lR",show:"rR"},
+    {text:c.udd,                    lid:"lU",show:"rU",scroll:"rU"},
+    {text:"Svar: "+c.svar,          lid:"lS",show:"rS",scroll:"rS"},
+    {text:"Kilde: "+c.src,          lid:"lK",show:"rK"},
+    {wait:3500,fn:function(){schedRep(curItem);qIdx++;updateCtr();showCard();}}
+  ],0);
 }
 
 function runSeq(steps,i){
   if(!playing||i>=steps.length)return;
   var st=steps[i];
-  if(st.skip){runSeq(steps,i+1);return;}
-  if(st.show) show(st.show);
-  if(st.scroll) G(st.scroll).scrollIntoView({behavior:"smooth",block:"nearest"});
+  if(st.show)show(st.show);
+  if(st.scroll)G(st.scroll).scrollIntoView({behavior:"smooth",block:"nearest"});
   if(st.wait!==undefined){
-    if(st.fn) st.fn();
-    unlit(); hide("spkbar");
+    if(st.fn)st.fn();
+    unlit();hide("spkbar");
     seqTmr=setTimeout(function(){runSeq(steps,i+1);},st.wait);
     return;
   }
   lit(st.lid);
-  tts(st.speak,function(){runSeq(steps,i+1);});
+  tts(st.text,function(){runSeq(steps,i+1);});
 }
 
-// ── TTS ────────────────────────────────────────────────────────────────────────
-function tts(text, onDone){
-  if(!playing) return;
-  if(!text||!text.trim()){if(playing&&onDone)seqTmr=setTimeout(onDone,80);return;}
-  if(!window.speechSynthesis){if(onDone)setTimeout(onDone,500);return;}
+// TTS — Google TTS via ResponsiveVoice, fallback til browser
+function tts(text,onDone){
+  if(!playing)return;
   var spd=SPEEDS[spdI];
-  var words=text.trim().split(/\s+/).length;
-  var estMs=Math.max(900,(words/(140*spd))*60000);
+  var ms=Math.max(900,(text.trim().split(/\s+/).length/(130*spd))*60000);
   G("spkbar").style.display="flex";
   G("spktxt").textContent=text.substring(0,55)+(text.length>55?"...":"");
-  startProg(estMs);
-  startKA();
-  // Chrome fix: resume hvis synthesen er sat på pause
-  if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+  startProg(ms);
+  var done=once(function(){stopProg();if(playing&&onDone)seqTmr=setTimeout(onDone,120);});
+
+  if(rvOK&&typeof responsiveVoice!=="undefined"){
+    try{
+      responsiveVoice.speak(text,VOICES[LANG],{
+        rate:spd,pitch:1.0,volume:1.0,
+        onend:done,
+        onerror:function(){
+          // Fallback til browser TTS
+          bTTS(text,spd,done);
+        }
+      });
+      return;
+    }catch(e){/* fald igennem til browser */}
+  }
+  bTTS(text,spd,done);
+}
+
+function bTTS(text,spd,done){
+  if(!window.speechSynthesis){setTimeout(done,1000);return;}
   window.speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
-  u.rate=spd; u.pitch=1.0; u.volume=1.0;
-  var voice=(LANG==="da") ? voiceDa : voiceEn;
-  if(voice){
-    u.voice=voice; u.lang=voice.lang;
-    G("spktxt").textContent="["+voice.name.substring(0,15)+"] "+G("spktxt").textContent;
-  } else {
-    // Ingen specifik stemme fundet - brug lang-kode direkte
-    u.lang = (LANG==="da") ? "da-DK" : "en-GB";
-  }
-  var dc=false;
-  function done(){if(dc)return;dc=true;stopProg();if(playing&&onDone)seqTmr=setTimeout(onDone,120);}
-  u.onend=done;
-  u.onerror=function(){
-    if(!dc && u.voice){
-      // Proev igen uden specifik stemme
-      u.voice=null;
-      window.speechSynthesis.cancel();
-      setTimeout(function(){ window.speechSynthesis.speak(u); }, 100);
-    } else { done(); }
-  };
-  seqTmr=setTimeout(function(){window.speechSynthesis.cancel();done();},estMs*2.5+5000);
+  u.lang=LANG==="da"?"da-DK":"en-GB";u.rate=spd;u.pitch=1.0;
+  u.onend=done;u.onerror=done;
   window.speechSynthesis.speak(u);
 }
 
-// ── PROGRESS BAR ───────────────────────────────────────────────────────────────
+function once(fn){var c=false;return function(){if(!c){c=true;fn();}};}
+
+function stopAll(){
+  if(seqTmr){clearTimeout(seqTmr);seqTmr=null;}
+  if(rvOK&&typeof responsiveVoice!=="undefined"){try{responsiveVoice.cancel();}catch(e){}}
+  if(window.speechSynthesis){try{window.speechSynthesis.cancel();}catch(e){}}
+  stopProg();
+}
+
 var pTmr=null;
 function startProg(ms){
-  var f=G("progfill"); f.style.transition="none"; f.style.width="0%";
+  var f=G("progfill");f.style.transition="none";f.style.width="0%";
   if(pTmr)clearTimeout(pTmr);
   pTmr=setTimeout(function(){f.style.transition="width "+ms+"ms linear";f.style.width="100%";},30);
 }
 function stopProg(){
   if(pTmr){clearTimeout(pTmr);pTmr=null;}
-  var f=G("progfill"); f.style.transition="none"; f.style.width="0%";
-}
-function stopAll(){
-  if(seqTmr){clearTimeout(seqTmr);seqTmr=null;}
-  if(window.speechSynthesis){try{window.speechSynthesis.cancel();}catch(e){}}
-  stopProg(); stopKA();
+  var f=G("progfill");f.style.transition="none";f.style.width="0%";
 }
 
-// ── UI HELPERS ─────────────────────────────────────────────────────────────────
-function lit(id){document.querySelectorAll(".lbl").forEach(function(l){l.classList.remove("lit");});if(id&&G(id))G(id).classList.add("lit");}
+function lit(id){
+  document.querySelectorAll(".lbl").forEach(function(l){l.classList.remove("lit");});
+  if(id&&G(id))G(id).classList.add("lit");
+}
 function unlit(){document.querySelectorAll(".lbl").forEach(function(l){l.classList.remove("lit");});}
 function setBadge(ph){
   var b=G("cBadge");
