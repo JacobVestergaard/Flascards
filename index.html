@@ -6,20 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Flashcards">
 <meta name="theme-color" content="#0d0d12">
-<link rel="manifest" href="./manifest.json">
 <title>Flashcards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#0d0d12;--s:#13131c;--b:#1c1c28;--b2:#22223a;
-  --t:#e8e8f2;--m:#7777a0;--mm:#44445a;
-  --g:#34d399;--p:#818cf8;--y:#fbbf24;--r:#fb7185;
-  --gd:#081a10;--pd:#0d0d22;
-}
-html,body{height:100%;background:var(--bg);color:var(--t);font-family:'DM Sans',-apple-system,sans-serif;overflow:hidden}
+:root{--bg:#0d0d12;--s:#13131c;--b:#1c1c28;--b2:#22223a;--t:#e8e8f2;--m:#7777a0;--mm:#44445a;--g:#34d399;--p:#818cf8;--y:#fbbf24;--r:#fb7185;--gd:#081a10;--pd:#0d0d22}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-family:'DM Sans',-apple-system,sans-serif}
 .pg{display:none;flex-direction:column;height:100svh}.pg.on{display:flex}
 
 /* HOME */
@@ -27,18 +20,19 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:'DM Sans',
 .logo{font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;letter-spacing:-.3px}
 .sub{font-size:12px;color:var(--mm);margin-top:3px}
 .pill{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 12px;background:var(--s);border:1px solid var(--b);border-radius:10px;font-size:11px;color:var(--m)}
-.pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s}
 .lngs{display:flex;gap:6px;margin-top:9px}
 .lb{padding:6px 15px;border-radius:99px;border:1px solid var(--b);background:var(--s);color:var(--m);font-size:12px;font-family:inherit;cursor:pointer;transition:.15s}
 .lb.on{background:var(--gd);color:var(--g);border-color:#1c4a2c;font-weight:600}
 .list{flex:1;overflow-y:auto;padding:6px 20px 120px;-webkit-overflow-scrolling:touch}
 .sec-h{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mm);margin:16px 0 6px 2px}
-.dk{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--s);border:1px solid var(--b);border-radius:11px;margin-bottom:6px;cursor:pointer;transition:background .1s,border-color .1s}
+.dk{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--s);border:1px solid var(--b);border-radius:11px;margin-bottom:6px;cursor:pointer;border:1px solid transparent;transition:.1s}
+.dk:hover{background:var(--b)}
 .dk.on{background:var(--gd);border-color:#1c4a2c}
+.dk.on .dk-name{color:var(--g)}
 .dk-ico{width:34px;height:34px;background:var(--b2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .dk-info{flex:1;min-width:0}
-.dk-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--t)}
-.dk.on .dk-name{color:var(--g)}
+.dk-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dk-cnt{font-size:11px;color:var(--m);margin-top:1px}
 .dk-chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.12s}
 .dk.on .dk-chk{background:var(--g);border-color:var(--g)}
@@ -63,17 +57,17 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:'DM Sans',
 .r2{background:#1a1205;color:var(--y);border:1px solid #40300e}
 .r3{background:#1a050e;color:var(--r);border:1px solid #40101e}
 
-/* Fields — ALL visible, answer ones dimmed until revealed */
-.field{padding:8px 0;border-bottom:1px solid #181826}
+/* Felter — ALLE synlige fra start, svar-felter dimmet */
+.field{padding:9px 0;border-bottom:1px solid #181826}
 .field:last-child{border-bottom:none}
-.field.ans{opacity:.2;transition:opacity .35s}
+.field.ans{opacity:.18;transition:opacity .4s}
 .field.ans.show{opacity:1}
 .fl{font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mm);margin-bottom:4px;transition:color .15s}
 .fl.lit{color:var(--y)}
-.fv{font-size:14px;line-height:1.75}
+.fv{font-size:14px;line-height:1.76}
 .fv.ctx{color:var(--m);font-size:12.5px;font-style:italic}
 .fv.big{font-size:15px;font-weight:600;color:#fff}
-.fv.blue{color:var(--p);font-size:13px}
+.fv.blue{color:var(--p);font-size:13px;line-height:1.7}
 .fv.src{color:var(--mm);font-size:11.5px;font-style:italic}
 
 /* Speaking bar */
@@ -83,7 +77,7 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:'DM Sans',
 .spktxt{font-size:10.5px;color:var(--g);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* Controls */
-.ctrl{padding:9px 16px;padding-bottom:max(14px,calc(env(safe-area-inset-bottom)+2px));border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
+.ctrl{padding:9px 16px;padding-bottom:max(4px,calc(env(safe-area-inset-bottom)+2px));border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
 .spd-btn{padding:10px 12px;background:var(--s);border:1px solid var(--b);border-radius:9px;color:var(--m);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;min-width:50px;text-align:center}
 .spd-btn.hi{color:var(--y);border-color:#40300e;background:#1a1205}
 .main-btn{flex:1;padding:11px;background:#fff;color:#000;border:none;border-radius:9px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
@@ -105,7 +99,7 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
   <div class="hdr">
     <div class="logo">Flashcards</div>
     <div class="sub">Vaelg decks og tryk Afspil</div>
-    <div class="pill"><div class="pill-dot" id="pdot" style="background:var(--y)"></div><span id="ptxt">Indlaeder...</span></div>
+    <div class="pill"><div class="pdot" id="pdot" style="background:var(--y)"></div><span id="ptxt">Indlaeder...</span></div>
     <div class="lngs">
       <button class="lb on" id="bDA" onclick="setLang('da')">Dansk</button>
       <button class="lb"    id="bEN" onclick="setLang('en')">English</button>
@@ -133,10 +127,10 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
       <div style="font-size:11px;color:var(--mm);line-height:1.7;max-width:260px">Hvert kort laeses 4 gange med stigende interval</div>
       <div id="idleChips" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:4px"></div>
     </div>
-    <div id="cardV" style="display:none;flex-direction:column">
+    <div id="cardV" style="display:none">
       <div class="rep r0" id="rBadge">Nyt</div>
-      <div class="field" id="fQ"><div class="fl" id="lQ">SPOERGSMAAL</div><div class="fv" id="vQ"></div></div>
-      <div class="field" id="fC"><div class="fl" id="lC">KONTEKST</div><div class="fv ctx" id="vC"></div></div>
+      <div class="field"><div class="fl" id="lQ">SPOERGSMAAL</div><div class="fv" id="vQ"></div></div>
+      <div class="field"><div class="fl" id="lC">KONTEKST</div><div class="fv ctx" id="vC"></div></div>
       <div class="field ans" id="fE"><div class="fl" id="lE">ESSENS</div><div class="fv big" id="vE"></div></div>
       <div class="field ans" id="fR"><div class="fl" id="lR">REFLEKSION</div><div class="fv blue" id="vR"></div></div>
       <div class="field ans" id="fU"><div class="fl" id="lU">UDDYBNING</div><div class="fv" id="vU"></div></div>
@@ -154,13 +148,13 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
   </div>
   <div class="prow">
     <div class="pslot">
-      <span class="plbl">Svar</span>
+      <span class="plbl">Pause svar</span>
       <input type="range" id="p1r" min="1" max="10" value="3"
              oninput="PAUSE1=+this.value;G('p1v').textContent=this.value+'s'">
       <span class="pval g" id="p1v">3s</span>
     </div>
     <div class="pslot">
-      <span class="plbl">Naeste</span>
+      <span class="plbl">Pause naeste</span>
       <input type="range" id="p2r" min="1" max="12" value="4"
              oninput="PAUSE2=+this.value;G('p2v').textContent=this.value+'s'">
       <span class="pval p" id="p2v">4s</span>
@@ -168,28 +162,108 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     TTS-MODUL — Dette er det eneste sted TTS er defineret.
+     Skift mellem metoderne ved at uncommente den du vil teste.
+     ═══════════════════════════════════════════════════════════ -->
 <script>
-var TS="1778012465",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+// ── TTS METODE (skift her for at teste) ─────────────────────────
+// Metode A: Google Translate TTS via <audio> element (ingen API-noegle)
+// Metode B: Web Speech API (browserens egne stemmer)
+// Aktuelt aktiv: Metode A med fallback til B
+var TTS_METHOD = "A";  // skift til "B" for at teste Web Speech API
+
+// Google Translate TTS URL
+function gttsUrl(text, lang){
+  return "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="
+    + lang + "&q=" + encodeURIComponent(text.substring(0,200));
+}
+
+// Aktiv audio element
+var _audio = null;
+var _wsVoiceDa = null;
+var _wsVoiceEn = null;
+
+// Indlaes Web Speech stemmer (bruges som fallback)
+if(window.speechSynthesis){
+  function _loadVoices(){
+    var vs = window.speechSynthesis.getVoices();
+    if(!vs.length) return;
+    _wsVoiceDa = vs.find(function(v){return /^da/i.test(v.lang);}) || null;
+    _wsVoiceEn = vs.find(function(v){return /^en/i.test(v.lang);}) || null;
+  }
+  window.speechSynthesis.onvoiceschanged = _loadVoices;
+  _loadVoices(); setTimeout(_loadVoices, 500);
+}
+
+// Hoved TTS-funktion
+function doSpeak(text, lang, onDone){
+  if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
+
+  if(TTS_METHOD === "A"){
+    // Metode A: Google Translate TTS
+    if(_audio){ try{_audio.pause(); _audio.src="";}catch(e){} }
+    var url = gttsUrl(text, lang);
+    var audio = new Audio(url);
+    _audio = audio;
+    audio.playbackRate = SPEEDS[spdI];
+    var done = false;
+    function finish(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
+    audio.onended  = finish;
+    audio.onerror  = function(){ methodB(text, lang, finish); }; // Fallback ved fejl
+    audio.play().catch(function(){ methodB(text, lang, finish); });
+  } else {
+    methodB(text, lang, onDone);
+  }
+}
+
+// Metode B: Web Speech API
+function methodB(text, lang, onDone){
+  if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.rate = SPEEDS[spdI]; u.pitch = 1.0; u.volume = 1.0;
+  var voice = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
+  if(voice){ u.voice=voice; u.lang=voice.lang; }
+  else { u.lang = lang==="da" ? "da-DK" : "en-GB"; }
+  var done=false;
+  function finish(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
+  u.onend=finish; u.onerror=finish;
+  window.speechSynthesis.speak(u);
+  setTimeout(finish, Math.max(3000, text.length * 100)); // Sikkerhedsnet
+}
+
+function stopSpeech(){
+  if(_audio){ try{_audio.pause(); _audio.src="";}catch(e){} _audio=null; }
+  if(window.speechSynthesis){ try{window.speechSynthesis.cancel();}catch(e){} }
+}
+</script>
+
+<!-- ═══════════════════════════════════════
+     APP LOGIK — rodes ikke i TTS her
+     ═══════════════════════════════════════ -->
+<script>
+var TS="1778055412",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
-var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false;
-var seqTmr=null,ttsSafe=null;
-var RV_VOICES={da:"Danish Female",en:"UK English Female"};
-var LBL={da:{spg:"Spoergsmaal",ctx:"Kontekst",essens:"Essens",ref:"Refleksionsspoergsmaal",udd:"Uddybning",svar:"Svar paa refleksion",src:"Kilde"},en:{spg:"Question",ctx:"Context",essens:"Essence",ref:"Reflection question",udd:"Elaboration",svar:"Answer",src:"Source"}};
+var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null,ttsSafe=null;
+var LBL={
+  da:{spg:"Spoergsmaal",ctx:"Kontekst",essens:"Essens",ref:"Refleksionsspoergsmaal",udd:"Uddybning",svar:"Svar paa refleksion",src:"Kilde"},
+  en:{spg:"Question",ctx:"Context",essens:"Essence",ref:"Reflection question",udd:"Elaboration",svar:"Answer",src:"Source"}
+};
 
 function G(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 
-// Hent decks
 fetch("./decks.json?v="+TS)
-  .then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
-  .then(d=>{
+  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  .then(function(d){
     META=d.decks||[];
-    var tot=META.reduce((a,x)=>a+x.n,0);
+    var tot=META.reduce(function(a,x){return a+x.n;},0);
     G("pdot").style.background="var(--g)";
-    G("ptxt").textContent=tot+" kort — Google TTS";
+    G("ptxt").textContent=tot+" kort klar";
     renderDecks();
     preload();
-  }).catch(e=>{
+  }).catch(function(e){
     G("pdot").style.background="var(--r)";
     G("ptxt").textContent="Fejl: koer sync.py";
   });
@@ -201,28 +275,29 @@ function preload(){
     var did=META[i++].id;
     if(CACHE[did]){nx();return;}
     fetch("./cards/"+did+".json?v="+TS)
-      .then(r=>r.json())
-      .then(raw=>{CACHE[did]=raw.map(expand);setTimeout(nx,70);})
-      .catch(()=>setTimeout(nx,300));
+      .then(function(r){return r.json();})
+      .then(function(raw){CACHE[did]=raw.map(expand);setTimeout(nx,70);})
+      .catch(function(){setTimeout(nx,300);});
   })();
 }
 function expand(c){return{spg:c[0],ctx:c[1],essens:c[2],ref:c[3],udd:c[4],svar:c[5],src:c[6]};}
 function fetchDeck(did){
   if(CACHE[did])return Promise.resolve(CACHE[did]);
-  return fetch("./cards/"+did+".json?v="+TS).then(r=>r.json()).then(raw=>{CACHE[did]=raw.map(expand);return CACHE[did];});
+  return fetch("./cards/"+did+".json?v="+TS).then(function(r){return r.json();}).then(function(raw){CACHE[did]=raw.map(expand);return CACHE[did];});
 }
 
 function renderDecks(){
   var sec=G("deckSec");sec.innerHTML="";
   var groups={},order=[];
-  META.forEach(d=>{var g=d.folder||d.cat;if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(d);});
-  order.forEach(g=>{
+  META.forEach(function(d){var g=d.folder||d.cat;if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(d);});
+  if(!order.length){sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks — koer sync.py</div>';return;}
+  order.forEach(function(g){
     var decks=groups[g];
     var lbl=document.createElement("div");lbl.className="sec-h";lbl.textContent=decks[0].folderLabel||g;sec.appendChild(lbl);
-    decks.forEach(d=>{
+    decks.forEach(function(d){
       var div=document.createElement("div");div.className="dk";div.id="dk_"+d.id;
-      div.innerHTML=`<div class="dk-ico">${d.icon}</div><div class="dk-info"><div class="dk-name">${esc(d.name)}</div><div class="dk-cnt">${d.n} kort</div></div><div class="dk-chk"><div class="tick"></div></div>`;
-      div.addEventListener("click",()=>toggleDeck(d.id));
+      div.innerHTML='<div class="dk-ico">'+d.icon+'</div><div class="dk-info"><div class="dk-name">'+esc(d.name)+'</div><div class="dk-cnt">'+d.n+' kort</div></div><div class="dk-chk"><div class="tick"></div></div>';
+      div.addEventListener("click",function(){toggleDeck(d.id);});
       sec.appendChild(div);
     });
   });
@@ -231,47 +306,45 @@ function renderDecks(){
 function toggleDeck(did){if(sel.has(did))sel.delete(did);else sel.add(did);G("dk_"+did).classList.toggle("on",sel.has(did));updateBar();}
 function updateBar(){
   var n=sel.size;G("bar").classList.toggle("show",n>0);
-  var tot=0;sel.forEach(did=>{var d=findM(did);if(d)tot+=d.n;});
+  var tot=0;sel.forEach(function(did){var d=findM(did);if(d)tot+=d.n;});
   G("bInfo").innerHTML="<strong>"+n+" deck"+(n>1?"s":"")+"</strong> &middot; "+tot+" kort";
 }
-function clearSel(){sel.forEach(did=>G("dk_"+did).classList.remove("on"));sel.clear();updateBar();}
+function clearSel(){sel.forEach(function(did){G("dk_"+did).classList.remove("on");});sel.clear();updateBar();}
 function setLang(l){LANG=l;G("bDA").classList.toggle("on",l==="da");G("bEN").classList.toggle("on",l==="en");}
-function findM(did){return META.find(x=>x.id===did)||null;}
+function findM(did){for(var i=0;i<META.length;i++)if(META[i].id===did)return META[i];return null;}
 function nextSpd(){spdI=(spdI+1)%SPEEDS.length;G("spdBtn").textContent=SPEEDS[spdI].toFixed(1)+"x";G("spdBtn").classList.toggle("hi",spdI!==1);}
 function updateCtr(){G("pctr").textContent=qIdx+"/"+queue.length;}
 
 // SRS
 function srsIv(p){return Math.round(SRS_BASE*Math.pow(SRS_FACTOR,p));}
-function buildQ(cards){var a=cards.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}queue=a.map(c=>({card:c,pass:0}));qIdx=0;}
+function buildQ(cards){var a=cards.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}queue=a.map(function(c){return{card:c,pass:0};});qIdx=0;}
 function schedRep(item){if(item.pass>=SRS_REPS)return;var iv=srsIv(item.pass);var jit=Math.floor(Math.random()*(SRS_JITTER*2+1))-SRS_JITTER;var pos=Math.max(qIdx+1,Math.min(qIdx+iv+jit,queue.length));queue.splice(pos,0,{card:item.card,pass:item.pass+1});}
 
 function startPlay(){
   var ids=Array.from(sel);if(!ids.length)return;
   var btn=G("goBtn");
-  if(ids.some(id=>!CACHE[id])){btn.textContent="Indlaeder...";btn.disabled=true;}
-  Promise.all(ids.map(id=>fetchDeck(id).catch(()=>[]))).then(results=>{
-    btn.textContent="Afspil";btn.disabled=false;
-    var all=[];
-    ids.forEach((id,i)=>{var d=findM(id);if(d)results[i].forEach(c=>all.push(Object.assign({},c,{_d:d.name})));});
-    if(!all.length)return;
-    buildQ(all);playing=false;
-    G("pgHome").classList.remove("on");G("pgPlay").classList.add("on");
-    G("ptitle").textContent=ids.length===1?(findM(ids[0])||{name:""}).name:"Blandet "+ids.length+" decks";
-    G("idleH").textContent="Klar til afspilning";
-    G("idleChips").innerHTML=ids.map(id=>{var d=findM(id);return d?`<span style="font-size:10px;padding:3px 9px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)">${d.icon} ${esc(d.name)}</span>`:""}).join("");
-    G("idleV").style.display="flex";G("cardV").style.display="none";G("spkbar").style.display="none";
-    G("mainBtn").textContent="Afspil";updateCtr();
-  });
+  if(ids.filter(function(id){return!CACHE[id];}).length){btn.textContent="Indlaeder...";btn.disabled=true;}
+  Promise.all(ids.map(function(did){return fetchDeck(did).catch(function(){return[];});}))
+    .then(function(results){
+      btn.textContent="Afspil";btn.disabled=false;
+      var all=[];
+      ids.forEach(function(did,i){var d=findM(did);if(d)results[i].forEach(function(c){all.push(Object.assign({},c,{_d:d.name}));});});
+      if(!all.length)return;
+      buildQ(all);playing=false;
+      G("pgHome").classList.remove("on");G("pgPlay").classList.add("on");
+      G("ptitle").textContent=ids.length===1?(findM(ids[0])||{name:""}).name:"Blandet "+ids.length+" decks";
+      G("idleH").textContent="Klar til afspilning";
+      G("idleChips").innerHTML=ids.map(function(did){var d=findM(did);return d?'<span style="font-size:10px;padding:3px 9px;border-radius:99px;background:var(--s);border:1px solid var(--b);color:var(--m)">'+d.icon+" "+esc(d.name)+"</span>":""}).join("");
+      G("idleV").style.display="flex";G("cardV").style.display="none";G("spkbar").style.display="none";
+      G("mainBtn").textContent="Afspil";updateCtr();
+    });
 }
-
 function goHome(){playing=false;stopAll();G("pgPlay").classList.remove("on");G("pgHome").classList.add("on");}
 function togglePlay(){
   if(playing){playing=false;stopAll();G("mainBtn").textContent="Fortsaet";G("spkbar").style.display="none";}
   else{
-    if(qIdx>=queue.length){var seen={},c=[];queue.forEach(it=>{if(!seen[it.card.spg]){seen[it.card.spg]=1;c.push(it.card);}});buildQ(c);}
-    playing=true;G("mainBtn").textContent="Pause";
-    G("idleV").style.display="none";G("cardV").style.display="flex";
-    showCard();
+    if(qIdx>=queue.length){var seen={},c=[];queue.forEach(function(it){if(!seen[it.card.spg]){seen[it.card.spg]=1;c.push(it.card);}});buildQ(c);}
+    playing=true;G("mainBtn").textContent="Pause";G("idleV").style.display="none";G("cardV").style.display="block";showCard();
   }
 }
 function doSkip(){stopAll();if(!playing)return;if(curItem){schedRep(curItem);qIdx++;}updateCtr();showCard();}
@@ -279,39 +352,36 @@ function doSkip(){stopAll();if(!playing)return;if(curItem){schedRep(curItem);qId
 function showCard(){
   if(!playing)return;
   if(qIdx>=queue.length){
-    playing=false;stopAll();
-    G("mainBtn").textContent="Start forfra";
+    playing=false;stopAll();G("mainBtn").textContent="Start forfra";
     G("cardV").style.display="none";G("spkbar").style.display="none";
-    G("idleV").style.display="flex";G("idleH").textContent="Session faerdig!";
-    return;
+    G("idleV").style.display="flex";G("idleH").textContent="Session faerdig!";return;
   }
   curItem=queue[qIdx];updateCtr();
   var c=curItem.card,p=curItem.pass;
-  var rC=["r0","r1","r2","r3"][Math.min(p,3)];
-  var rL=["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(p,3)];
-  G("rBadge").className="rep "+rC;G("rBadge").textContent=rL;
+  G("rBadge").className="rep r"+Math.min(p,3);
+  G("rBadge").textContent=["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(p,3)];
 
-  // Saet alle felter paa een gang — ingen hop i teksten
-  G("vQ").textContent=c.spg;G("vC").textContent=c.ctx;
-  G("vE").textContent=c.essens;G("vR").textContent=c.ref;
-  G("vU").textContent=c.udd;G("vS").textContent=c.svar;
-  G("vK").textContent=(c._d?c._d+" — ":"")+c.src;
+  // Alle felter saettes paa een gang — ingen hop
+  G("vQ").textContent=c.spg; G("vC").textContent=c.ctx;
+  G("vE").textContent=c.essens; G("vR").textContent=c.ref;
+  G("vU").textContent=c.udd; G("vS").textContent=c.svar;
+  G("vK").textContent=(c._d?c._d+" \u2014 ":"")+c.src;
 
   // Dim svar-felter
-  ["fE","fR","fU","fS","fK"].forEach(id=>{G(id).className="field ans";});
+  ["fE","fR","fU","fS","fK"].forEach(function(id){G(id).classList.remove("show");});
   unlitAll();G("pcontent").scrollTop=0;
 
   var L=LBL[LANG];
   var steps=[
     {t:L.spg+": "+c.spg,   lid:"lQ"},
     {t:L.ctx+": "+c.ctx,   lid:"lC"},
-    {pauseFn:()=>PAUSE1*1000, fn:()=>["fE","fR","fU","fS","fK"].forEach(id=>G(id).classList.add("show"))},
+    {pauseFn:function(){return PAUSE1*1000;}, fn:function(){["fE","fR","fU","fS","fK"].forEach(function(id){G(id).classList.add("show");});}},
     {t:L.essens+": "+c.essens, lid:"lE", skip:!c.essens},
     {t:L.ref+": "+c.ref,       lid:"lR", skip:!c.ref},
     {t:L.udd+": "+c.udd,       lid:"lU", skip:!c.udd},
     {t:L.svar+": "+c.svar,     lid:"lS", skip:!c.svar},
     {t:L.src+": "+(c._d?c._d+". ":"")+c.src, lid:"lK"},
-    {pauseFn:()=>PAUSE2*1000, fn:()=>{schedRep(curItem);qIdx++;updateCtr();showCard();}}
+    {pauseFn:function(){return PAUSE2*1000;}, fn:function(){schedRep(curItem);qIdx++;updateCtr();showCard();}}
   ];
   runSeq(steps,0);
 }
@@ -323,51 +393,39 @@ function runSeq(steps,i){
   if(st.pauseFn){
     if(st.fn)st.fn();
     unlitAll();G("spkbar").style.display="none";
-    seqTmr=setTimeout(()=>runSeq(steps,i+1),st.pauseFn());
+    seqTmr=setTimeout(function(){runSeq(steps,i+1);},st.pauseFn());
     return;
   }
   litLabel(st.lid);
   G("spkbar").style.display="flex";
-  G("spktxt").textContent=st.t.substring(0,58)+(st.t.length>58?"...":"");
-  tts(st.t,()=>runSeq(steps,i+1));
-}
+  G("spktxt").textContent=st.t.substring(0,60)+(st.t.length>60?"...":"");
 
-// TTS via ResponsiveVoice (Google TTS)
-function tts(text,onDone){
-  if(!playing)return;
-  if(!text||!text.trim()){if(playing&&onDone)seqTmr=setTimeout(onDone,80);return;}
   if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
-  var spd=SPEEDS[spdI];
-  var words=text.trim().split(/\s+/).length;
-  var estMs=Math.max(900,(words/(130*spd))*60000);
-  var dc=false;
-  function done(){if(dc)return;dc=true;if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}if(playing&&onDone)seqTmr=setTimeout(onDone,150);}
-  if(typeof responsiveVoice!=="undefined"&&responsiveVoice.voiceSupport()){
-    responsiveVoice.speak(text,RV_VOICES[LANG],{rate:spd,pitch:1.0,volume:1.0,onend:done,onerror:done});
-  } else {
-    // Fallback: Web Speech API
-    if(!window.speechSynthesis){setTimeout(done,500);return;}
-    window.speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);
-    u.rate=spd;u.lang=LANG==="da"?"da-DK":"en-GB";
-    u.onend=done;u.onerror=done;
-    window.speechSynthesis.speak(u);
-  }
-  ttsSafe=setTimeout(()=>{if(typeof responsiveVoice!=="undefined")responsiveVoice.cancel();done();},estMs*2.5+5000);
+  var words=st.t.trim().split(/\s+/).length;
+  var estMs=Math.max(1000,(words/(130*SPEEDS[spdI]))*60000);
+
+  doSpeak(st.t, LANG, function(){
+    if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
+    if(playing) seqTmr=setTimeout(function(){runSeq(steps,i+1);},120);
+  });
+
+  // Sikkerhedsnet i separat timer
+  ttsSafe=setTimeout(function(){
+    ttsSafe=null;
+    stopSpeech();
+    if(playing) seqTmr=setTimeout(function(){runSeq(steps,i+1);},120);
+  }, estMs*2.5+5000);
 }
 
 function stopAll(){
   if(seqTmr){clearTimeout(seqTmr);seqTmr=null;}
   if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
-  if(typeof responsiveVoice!=="undefined")responsiveVoice.cancel();
-  if(window.speechSynthesis)window.speechSynthesis.cancel();
+  stopSpeech();
 }
-
-function unlitAll(){document.querySelectorAll(".fl").forEach(l=>l.classList.remove("lit"));}
+function unlitAll(){document.querySelectorAll(".fl").forEach(function(l){l.classList.remove("lit");});}
 function litLabel(id){unlitAll();if(id&&G(id))G(id).classList.add("lit");}
 
-// PWA Service Worker
-if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(function(){});
 </script>
 </body>
 </html>
