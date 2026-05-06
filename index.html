@@ -195,24 +195,43 @@ setTimeout(_checkRV, 2000);
 
 // Hoved TTS-funktion
 // Prioritet: 1) ResponsiveVoice (Google TTS), 2) Web Speech API (fallback)
+function _chunks(text, maxLen){
+  if(text.length <= maxLen) return [text];
+  var chunks = [], words = text.split(" "), cur = "";
+  for(var i=0; i<words.length; i++){
+    var w = words[i];
+    if(cur.length + w.length + 1 > maxLen && cur){ chunks.push(cur); cur = w; }
+    else { cur = cur ? cur+" "+w : w; }
+  }
+  if(cur) chunks.push(cur);
+  return chunks;
+}
+
 function doSpeak(text, lang, onDone){
   if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
   _checkRV();
 
   if(_rvReady){
-    // Google TTS via ResponsiveVoice
-    responsiveVoice.speak(text, RV_VOICE[lang], {
-      rate:   SPEEDS[spdI],
-      pitch:  1.0,
-      volume: 1.0,
-      onend:   function(){ if(onDone) setTimeout(onDone, 100); },
-      onerror: function(){
-        // RV fejlede — brug Web Speech som fallback
-        _wsSpeak(text, lang, onDone);
-      }
-    });
+    // Google TTS via ResponsiveVoice — tekst opdeles i chunks (RV FREE max ~180 tegn)
+    var parts = _chunks(text.trim(), 180);
+    var idx = 0;
+    function nextChunk(){
+      if(!playing) return;
+      if(idx >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
+      var chunk = parts[idx++];
+      responsiveVoice.speak(chunk, RV_VOICE[lang], {
+        rate:    SPEEDS[spdI],
+        pitch:   1.0,
+        volume:  1.0,
+        onend:   nextChunk,
+        onerror: function(){
+          var rest = parts.slice(idx-1).join(" ");
+          _wsSpeak(rest, lang, onDone);
+        }
+      });
+    }
+    nextChunk();
   } else {
-    // Fallback: Web Speech API
     _wsSpeak(text, lang, onDone);
   }
 }
@@ -255,7 +274,7 @@ function stopSpeech(){
      APP LOGIK — rodes ikke i TTS her
      ═══════════════════════════════════════ -->
 <script>
-var TS="1778064092",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+var TS="1778067613",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
 var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null,ttsSafe=null;
 var LBL={
