@@ -14,8 +14,6 @@
 :root{--bg:#0d0d12;--s:#13131c;--b:#1c1c28;--b2:#22223a;--t:#e8e8f2;--m:#7777a0;--mm:#44445a;--g:#34d399;--p:#818cf8;--y:#fbbf24;--r:#fb7185;--gd:#081a10;--pd:#0d0d22}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-family:'DM Sans',-apple-system,sans-serif}
 .pg{display:none;flex-direction:column;height:100svh}.pg.on{display:flex}
-
-/* HOME */
 .hdr{padding:52px 20px 14px;padding-top:max(52px,calc(env(safe-area-inset-top)+18px));flex-shrink:0}
 .logo{font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;letter-spacing:-.3px}
 .sub{font-size:12px;color:var(--mm);margin-top:3px}
@@ -26,8 +24,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-f
 .lb.on{background:var(--gd);color:var(--g);border-color:#1c4a2c;font-weight:600}
 .list{flex:1;overflow-y:auto;padding:6px 20px 120px;-webkit-overflow-scrolling:touch}
 .sec-h{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mm);margin:16px 0 6px 2px}
-.dk{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--s);border:1px solid var(--b);border-radius:11px;margin-bottom:6px;cursor:pointer;border:1px solid transparent;transition:.1s}
-.dk:hover{background:var(--b)}
+.dk{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--s);border:1px solid var(--b);border-radius:11px;margin-bottom:6px;cursor:pointer;transition:.1s}
 .dk.on{background:var(--gd);border-color:#1c4a2c}
 .dk.on .dk-name{color:var(--g)}
 .dk-ico{width:34px;height:34px;background:var(--b2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
@@ -42,22 +39,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-f
 .bar-info{flex:1;font-size:11px;color:var(--m)}.bar-info strong{color:var(--t);font-size:12px}
 .btn-ghost{padding:10px 12px;background:var(--s);border:1px solid var(--b);border-radius:9px;color:var(--m);font-size:12px;font-family:inherit;cursor:pointer}
 .btn-go{padding:10px 22px;background:var(--g);color:#000;border:none;border-radius:9px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}
-
-/* PLAYER */
 .top{display:flex;align-items:center;padding:10px 16px;padding-top:max(10px,calc(env(safe-area-inset-top)+4px));border-bottom:1px solid var(--b);gap:8px;flex-shrink:0;min-height:50px}
 .bk{background:none;border:none;color:var(--m);font-size:13px;cursor:pointer;font-family:inherit;padding:3px 0}
 .ptitle{flex:1;text-align:center;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
 .pctr{font-size:11px;color:var(--m);white-space:nowrap}
 .content{flex:1;overflow-y:auto;padding:16px 20px 20px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
-
-/* Rep badge */
 .rep{align-self:flex-start;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-bottom:12px}
 .r0{background:var(--gd);color:var(--g);border:1px solid #1c4a2c}
 .r1{background:var(--pd);color:var(--p);border:1px solid #1c1c44}
 .r2{background:#1a1205;color:var(--y);border:1px solid #40300e}
 .r3{background:#1a050e;color:var(--r);border:1px solid #40101e}
-
-/* Felter — ALLE synlige fra start, svar-felter dimmet */
 .field{padding:9px 0;border-bottom:1px solid #181826}
 .field:last-child{border-bottom:none}
 .field.ans{opacity:.18;transition:opacity .4s}
@@ -69,14 +60,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-f
 .fv.big{font-size:15px;font-weight:600;color:#fff}
 .fv.blue{color:var(--p);font-size:13px;line-height:1.7}
 .fv.src{color:var(--mm);font-size:11.5px;font-style:italic}
-
-/* Speaking bar */
 .spkbar{padding:9px 16px;background:#080e0a;border-top:1px solid #162012;display:flex;align-items:center;gap:8px;flex-shrink:0;min-height:36px}
 .spkdot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:blink 1.2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .spktxt{font-size:10.5px;color:var(--g);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* Controls */
 .ctrl{padding:9px 16px;padding-bottom:max(4px,calc(env(safe-area-inset-bottom)+2px));border-top:1px solid var(--b);display:flex;gap:7px;align-items:center;flex-shrink:0}
 .spd-btn{padding:10px 12px;background:var(--s);border:1px solid var(--b);border-radius:9px;color:var(--m);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;min-width:50px;text-align:center}
 .spd-btn.hi{color:var(--y);border-color:#40300e;background:#1a1205}
@@ -94,7 +81,6 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
 </head>
 <body>
 
-<!-- HOME -->
 <div class="pg on" id="pgHome">
   <div class="hdr">
     <div class="logo">Flashcards</div>
@@ -113,7 +99,6 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
   </div>
 </div>
 
-<!-- PLAYER -->
 <div class="pg" id="pgPlay">
   <div class="top">
     <button class="bk" onclick="goHome()">&#8592; Decks</button>
@@ -163,80 +148,83 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     TTS-MODUL — ResponsiveVoice (Google TTS backend)
-     Indlaeses her, bruges nedenfor i doSpeak()
+     TTS via ResponsiveVoice (Google TTS) — MED CHUNKING
+     RV FREE max ~180 tegn per kald, derfor opdeles lang tekst
      ═══════════════════════════════════════════════════════════ -->
 <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <script>
-// ResponsiveVoice stemmer — disse kalder Google TTS internt
 var RV_VOICE = { da: "Danish Female", en: "UK English Female" };
-
-// Holder styr paa om RV er klar
 var _rvReady = false;
-var _rvChecked = false;
 
-function _checkRV(){
-  if(_rvChecked) return;
-  _rvChecked = true;
+function _initRV(){
   if(typeof responsiveVoice !== "undefined"){
-    try {
-      responsiveVoice.init();
-      _rvReady = responsiveVoice.voiceSupport();
-    } catch(e){ _rvReady = false; }
+    try { _rvReady = responsiveVoice.voiceSupport(); } catch(e){ _rvReady = false; }
   }
-  // Opdater status-tekst i UI
   var el = document.getElementById("ptxt");
-  if(el && _rvReady) el.textContent = el.textContent.replace("klar","klar — Google TTS");
+  if(el && _rvReady && el.textContent.indexOf("Google") < 0){
+    el.textContent = el.textContent + " — Google TTS";
+  }
 }
+setTimeout(_initRV, 600);
+setTimeout(_initRV, 2000);
 
-// Kald checkRV naar siden er indlaedt
-setTimeout(_checkRV, 500);
-setTimeout(_checkRV, 2000);
-
-// Hoved TTS-funktion
-// Prioritet: 1) ResponsiveVoice (Google TTS), 2) Web Speech API (fallback)
+// Opdel tekst i bidder paa max maxLen tegn ved ord-graenser
 function _chunks(text, maxLen){
+  text = text.trim();
   if(text.length <= maxLen) return [text];
-  var chunks = [], words = text.split(" "), cur = "";
+  var out = [], words = text.split(/\s+/), cur = "";
   for(var i=0; i<words.length; i++){
     var w = words[i];
-    if(cur.length + w.length + 1 > maxLen && cur){ chunks.push(cur); cur = w; }
-    else { cur = cur ? cur+" "+w : w; }
+    if(w.length > maxLen){
+      // Ord laengere end maxLen — del ved tegn
+      if(cur){ out.push(cur); cur = ""; }
+      while(w.length > maxLen){ out.push(w.substring(0,maxLen)); w = w.substring(maxLen); }
+      cur = w;
+    } else if((cur+" "+w).trim().length > maxLen){
+      out.push(cur); cur = w;
+    } else {
+      cur = cur ? cur+" "+w : w;
+    }
   }
-  if(cur) chunks.push(cur);
-  return chunks;
+  if(cur) out.push(cur);
+  return out;
 }
 
+// Hoved TTS
 function doSpeak(text, lang, onDone){
   if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
-  _checkRV();
+  if(!_rvReady) _initRV();
 
-  if(_rvReady){
-    // Google TTS via ResponsiveVoice — tekst opdeles i chunks (RV FREE max ~180 tegn)
-    var parts = _chunks(text.trim(), 180);
-    var idx = 0;
-    function nextChunk(){
-      if(!playing) return;
-      if(idx >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
-      var chunk = parts[idx++];
-      responsiveVoice.speak(chunk, RV_VOICE[lang], {
-        rate:    SPEEDS[spdI],
-        pitch:   1.0,
-        volume:  1.0,
-        onend:   nextChunk,
-        onerror: function(){
-          var rest = parts.slice(idx-1).join(" ");
-          _wsSpeak(rest, lang, onDone);
-        }
-      });
+  if(_rvReady && typeof responsiveVoice !== "undefined"){
+    var parts = _chunks(text, 160);
+    var i = 0;
+    function next(){
+      if(!playing){ return; }
+      if(i >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
+      var chunk = parts[i++];
+      try {
+        responsiveVoice.speak(chunk, RV_VOICE[lang], {
+          rate:    SPEEDS[spdI],
+          pitch:   1.0,
+          volume:  1.0,
+          onend:   next,
+          onerror: function(){
+            // Hvis dette chunk fejler, hop videre — undgaa daedlock
+            setTimeout(next, 100);
+          }
+        });
+      } catch(e){
+        setTimeout(next, 100);
+      }
     }
-    nextChunk();
+    next();
   } else {
+    // Web Speech fallback
     _wsSpeak(text, lang, onDone);
   }
 }
 
-// Web Speech API fallback
+// Web Speech API som fallback
 var _wsVoiceDa = null, _wsVoiceEn = null;
 if(window.speechSynthesis){
   function _wsLoad(){
@@ -251,17 +239,23 @@ if(window.speechSynthesis){
 
 function _wsSpeak(text, lang, onDone){
   if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
+  // Web Speech haandterer lange tekster bedre — split i mindre stykker for sikkerhed
+  var parts = _chunks(text, 200);
+  var i = 0;
+  function next(){
+    if(!playing) return;
+    if(i >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
+    var u = new SpeechSynthesisUtterance(parts[i++]);
+    u.rate  = SPEEDS[spdI]; u.pitch = 1.0; u.volume = 1.0;
+    var v = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
+    if(v){ u.voice=v; u.lang=v.lang; }
+    else { u.lang = lang==="da" ? "da-DK" : "en-GB"; }
+    u.onend = next;
+    u.onerror = function(){ setTimeout(next, 100); };
+    window.speechSynthesis.speak(u);
+  }
   window.speechSynthesis.cancel();
-  var u = new SpeechSynthesisUtterance(text);
-  u.rate = SPEEDS[spdI]; u.pitch = 1.0; u.volume = 1.0;
-  var v = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
-  if(v){ u.voice=v; u.lang=v.lang; }
-  else { u.lang = lang==="da" ? "da-DK" : "en-GB"; }
-  var done=false;
-  function fin(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
-  u.onend=fin; u.onerror=fin;
-  window.speechSynthesis.speak(u);
-  setTimeout(fin, Math.max(3000, text.trim().split(/\s+/).length * 600));
+  next();
 }
 
 function stopSpeech(){
@@ -271,12 +265,12 @@ function stopSpeech(){
 </script>
 
 <!-- ═══════════════════════════════════════
-     APP LOGIK — rodes ikke i TTS her
+     APP LOGIK
      ═══════════════════════════════════════ -->
 <script>
-var TS="1778068256",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+var TS="1778100773",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
-var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null,ttsSafe=null;
+var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null;
 var LBL={
   da:{spg:"Spoergsmaal",ctx:"Kontekst",essens:"Essens",ref:"Refleksionsspoergsmaal",udd:"Uddybning",svar:"Svar paa refleksion",src:"Kilde"},
   en:{spg:"Question",ctx:"Context",essens:"Essence",ref:"Reflection question",udd:"Elaboration",svar:"Answer",src:"Source"}
@@ -292,6 +286,7 @@ fetch("./decks.json?v="+TS)
     var tot=META.reduce(function(a,x){return a+x.n;},0);
     G("pdot").style.background="var(--g)";
     G("ptxt").textContent=tot+" kort klar";
+    setTimeout(_initRV, 200);
     renderDecks();
     preload();
   }).catch(function(e){
@@ -321,7 +316,7 @@ function renderDecks(){
   var sec=G("deckSec");sec.innerHTML="";
   var groups={},order=[];
   META.forEach(function(d){var g=d.folder||d.cat;if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(d);});
-  if(!order.length){sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks — koer sync.py</div>';return;}
+  if(!order.length){sec.innerHTML='<div style="padding:20px;color:var(--m);font-size:13px">Ingen decks</div>';return;}
   order.forEach(function(g){
     var decks=groups[g];
     var lbl=document.createElement("div");lbl.className="sec-h";lbl.textContent=decks[0].folderLabel||g;sec.appendChild(lbl);
@@ -346,7 +341,6 @@ function findM(did){for(var i=0;i<META.length;i++)if(META[i].id===did)return MET
 function nextSpd(){spdI=(spdI+1)%SPEEDS.length;G("spdBtn").textContent=SPEEDS[spdI].toFixed(1)+"x";G("spdBtn").classList.toggle("hi",spdI!==1);}
 function updateCtr(){G("pctr").textContent=qIdx+"/"+queue.length;}
 
-// SRS
 function srsIv(p){return Math.round(SRS_BASE*Math.pow(SRS_FACTOR,p));}
 function buildQ(cards){var a=cards.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}queue=a.map(function(c){return{card:c,pass:0};});qIdx=0;}
 function schedRep(item){if(item.pass>=SRS_REPS)return;var iv=srsIv(item.pass);var jit=Math.floor(Math.random()*(SRS_JITTER*2+1))-SRS_JITTER;var pos=Math.max(qIdx+1,Math.min(qIdx+iv+jit,queue.length));queue.splice(pos,0,{card:item.card,pass:item.pass+1});}
@@ -392,13 +386,11 @@ function showCard(){
   G("rBadge").className="rep r"+Math.min(p,3);
   G("rBadge").textContent=["Nyt","Gensyn 1","Gensyn 2","Gensyn 3"][Math.min(p,3)];
 
-  // Alle felter saettes paa een gang — ingen hop
   G("vQ").textContent=c.spg; G("vC").textContent=c.ctx;
   G("vE").textContent=c.essens; G("vR").textContent=c.ref;
   G("vU").textContent=c.udd; G("vS").textContent=c.svar;
   G("vK").textContent=(c._d?c._d+" \u2014 ":"")+c.src;
 
-  // Dim svar-felter
   ["fE","fR","fU","fS","fK"].forEach(function(id){G(id).classList.remove("show");});
   unlitAll();G("pcontent").scrollTop=0;
 
@@ -430,27 +422,13 @@ function runSeq(steps,i){
   litLabel(st.lid);
   G("spkbar").style.display="flex";
   G("spktxt").textContent=st.t.substring(0,60)+(st.t.length>60?"...":"");
-
-  if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
-  var words=st.t.trim().split(/\s+/).length;
-  var estMs=Math.max(1000,(words/(130*SPEEDS[spdI]))*60000);
-
   doSpeak(st.t, LANG, function(){
-    if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
     if(playing) seqTmr=setTimeout(function(){runSeq(steps,i+1);},120);
   });
-
-  // Sikkerhedsnet i separat timer
-  ttsSafe=setTimeout(function(){
-    ttsSafe=null;
-    stopSpeech();
-    if(playing) seqTmr=setTimeout(function(){runSeq(steps,i+1);},120);
-  }, estMs*2.5+5000);
 }
 
 function stopAll(){
   if(seqTmr){clearTimeout(seqTmr);seqTmr=null;}
-  if(ttsSafe){clearTimeout(ttsSafe);ttsSafe=null;}
   stopSpeech();
 }
 function unlitAll(){document.querySelectorAll(".fl").forEach(function(l){l.classList.remove("lit");});}
