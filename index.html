@@ -163,79 +163,91 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     TTS-MODUL — Dette er det eneste sted TTS er defineret.
-     Skift mellem metoderne ved at uncommente den du vil teste.
+     TTS-MODUL — ResponsiveVoice (Google TTS backend)
+     Indlaeses her, bruges nedenfor i doSpeak()
      ═══════════════════════════════════════════════════════════ -->
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <script>
-// ── TTS METODE (skift her for at teste) ─────────────────────────
-// Metode A: Google Translate TTS via <audio> element (ingen API-noegle)
-// Metode B: Web Speech API (browserens egne stemmer)
-// Aktuelt aktiv: Metode A med fallback til B
-var TTS_METHOD = "A";  // skift til "B" for at teste Web Speech API
+// ResponsiveVoice stemmer — disse kalder Google TTS internt
+var RV_VOICE = { da: "Danish Female", en: "UK English Female" };
 
-// Google Translate TTS URL
-function gttsUrl(text, lang){
-  return "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="
-    + lang + "&q=" + encodeURIComponent(text.substring(0,200));
+// Holder styr paa om RV er klar
+var _rvReady = false;
+var _rvChecked = false;
+
+function _checkRV(){
+  if(_rvChecked) return;
+  _rvChecked = true;
+  if(typeof responsiveVoice !== "undefined"){
+    try {
+      responsiveVoice.init();
+      _rvReady = responsiveVoice.voiceSupport();
+    } catch(e){ _rvReady = false; }
+  }
+  // Opdater status-tekst i UI
+  var el = document.getElementById("ptxt");
+  if(el && _rvReady) el.textContent = el.textContent.replace("klar","klar — Google TTS");
 }
 
-// Aktiv audio element
-var _audio = null;
-var _wsVoiceDa = null;
-var _wsVoiceEn = null;
+// Kald checkRV naar siden er indlaedt
+setTimeout(_checkRV, 500);
+setTimeout(_checkRV, 2000);
 
-// Indlaes Web Speech stemmer (bruges som fallback)
+// Hoved TTS-funktion
+// Prioritet: 1) ResponsiveVoice (Google TTS), 2) Web Speech API (fallback)
+function doSpeak(text, lang, onDone){
+  if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
+  _checkRV();
+
+  if(_rvReady){
+    // Google TTS via ResponsiveVoice
+    responsiveVoice.speak(text, RV_VOICE[lang], {
+      rate:   SPEEDS[spdI],
+      pitch:  1.0,
+      volume: 1.0,
+      onend:   function(){ if(onDone) setTimeout(onDone, 100); },
+      onerror: function(){
+        // RV fejlede — brug Web Speech som fallback
+        _wsSpeak(text, lang, onDone);
+      }
+    });
+  } else {
+    // Fallback: Web Speech API
+    _wsSpeak(text, lang, onDone);
+  }
+}
+
+// Web Speech API fallback
+var _wsVoiceDa = null, _wsVoiceEn = null;
 if(window.speechSynthesis){
-  function _loadVoices(){
+  function _wsLoad(){
     var vs = window.speechSynthesis.getVoices();
     if(!vs.length) return;
     _wsVoiceDa = vs.find(function(v){return /^da/i.test(v.lang);}) || null;
     _wsVoiceEn = vs.find(function(v){return /^en/i.test(v.lang);}) || null;
   }
-  window.speechSynthesis.onvoiceschanged = _loadVoices;
-  _loadVoices(); setTimeout(_loadVoices, 500);
+  window.speechSynthesis.onvoiceschanged = _wsLoad;
+  _wsLoad(); setTimeout(_wsLoad, 500);
 }
 
-// Hoved TTS-funktion
-function doSpeak(text, lang, onDone){
-  if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
-
-  if(TTS_METHOD === "A"){
-    // Metode A: Google Translate TTS
-    if(_audio){ try{_audio.pause(); _audio.src="";}catch(e){} }
-    var url = gttsUrl(text, lang);
-    var audio = new Audio(url);
-    _audio = audio;
-    audio.playbackRate = SPEEDS[spdI];
-    var done = false;
-    function finish(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
-    audio.onended  = finish;
-    audio.onerror  = function(){ methodB(text, lang, finish); }; // Fallback ved fejl
-    audio.play().catch(function(){ methodB(text, lang, finish); });
-  } else {
-    methodB(text, lang, onDone);
-  }
-}
-
-// Metode B: Web Speech API
-function methodB(text, lang, onDone){
+function _wsSpeak(text, lang, onDone){
   if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
   window.speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(text);
   u.rate = SPEEDS[spdI]; u.pitch = 1.0; u.volume = 1.0;
-  var voice = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
-  if(voice){ u.voice=voice; u.lang=voice.lang; }
+  var v = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
+  if(v){ u.voice=v; u.lang=v.lang; }
   else { u.lang = lang==="da" ? "da-DK" : "en-GB"; }
   var done=false;
-  function finish(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
-  u.onend=finish; u.onerror=finish;
+  function fin(){ if(done)return; done=true; if(onDone) setTimeout(onDone,100); }
+  u.onend=fin; u.onerror=fin;
   window.speechSynthesis.speak(u);
-  setTimeout(finish, Math.max(3000, text.length * 100)); // Sikkerhedsnet
+  setTimeout(fin, Math.max(3000, text.trim().split(/\s+/).length * 600));
 }
 
 function stopSpeech(){
-  if(_audio){ try{_audio.pause(); _audio.src="";}catch(e){} _audio=null; }
-  if(window.speechSynthesis){ try{window.speechSynthesis.cancel();}catch(e){} }
+  if(typeof responsiveVoice !== "undefined"){ try{ responsiveVoice.cancel(); }catch(e){} }
+  if(window.speechSynthesis){ try{ window.speechSynthesis.cancel(); }catch(e){} }
 }
 </script>
 
@@ -243,7 +255,7 @@ function stopSpeech(){
      APP LOGIK — rodes ikke i TTS her
      ═══════════════════════════════════════ -->
 <script>
-var TS="1778055412",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+var TS="1778064092",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
 var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null,ttsSafe=null;
 var LBL={
