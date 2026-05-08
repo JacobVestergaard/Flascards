@@ -148,119 +148,83 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     TTS via ResponsiveVoice (Google TTS) — MED CHUNKING
-     RV FREE max ~180 tegn per kald, derfor opdeles lang tekst
+     TTS via Google Translate Audio (agte Google-stemme)
+     Primær: translate.googleapis.com — virker paa alle platforme
+     Fallback: Web Speech API — virker offline
      ═══════════════════════════════════════════════════════════ -->
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <script>
-var RV_VOICE = { da: "Danish Female", en: "UK English Female" };
-var _rvReady = false;
+var _curAudio = null;
 
-function _initRV(){
-  if(typeof responsiveVoice !== "undefined"){
-    try { _rvReady = responsiveVoice.voiceSupport(); } catch(e){ _rvReady = false; }
-  }
-  var el = document.getElementById("ptxt");
-  if(el && _rvReady && el.textContent.indexOf("Google") < 0){
-    el.textContent = el.textContent + " — Google TTS";
-  }
-}
-setTimeout(_initRV, 600);
-setTimeout(_initRV, 2000);
-
-// Opdel tekst i bidder paa max maxLen tegn ved ord-graenser
+// Opdel tekst i bidder paa max 180 tegn ved ordgraenser
 function _chunks(text, maxLen){
   text = text.trim();
   if(text.length <= maxLen) return [text];
   var out = [], words = text.split(/\s+/), cur = "";
   for(var i=0; i<words.length; i++){
-    var w = words[i];
-    if(w.length > maxLen){
-      // Ord laengere end maxLen — del ved tegn
-      if(cur){ out.push(cur); cur = ""; }
-      while(w.length > maxLen){ out.push(w.substring(0,maxLen)); w = w.substring(maxLen); }
-      cur = w;
-    } else if((cur+" "+w).trim().length > maxLen){
-      out.push(cur); cur = w;
-    } else {
-      cur = cur ? cur+" "+w : w;
-    }
+    var candidate = cur ? cur+" "+words[i] : words[i];
+    if(candidate.length > maxLen){ if(cur) out.push(cur); cur = words[i]; }
+    else cur = candidate;
   }
   if(cur) out.push(cur);
   return out;
 }
 
-// Hoved TTS
+function _gtUrl(text, lang){
+  return "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl="
+    + (lang==="da" ? "da" : "en")
+    + "&q=" + encodeURIComponent(text);
+}
+
+// Hoved TTS — Google Translate Audio
 function doSpeak(text, lang, onDone){
   if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
-  if(!_rvReady) _initRV();
-
-  if(_rvReady && typeof responsiveVoice !== "undefined"){
-    var parts = _chunks(text, 160);
-    var i = 0;
-    function next(){
-      if(!playing){ return; }
-      if(i >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
-      var chunk = parts[i++];
-      try {
-        responsiveVoice.speak(chunk, RV_VOICE[lang], {
-          rate:    SPEEDS[spdI],
-          pitch:   1.0,
-          volume:  1.0,
-          onend:   next,
-          onerror: function(){
-            // Hvis dette chunk fejler, hop videre — undgaa daedlock
-            setTimeout(next, 100);
-          }
-        });
-      } catch(e){
-        setTimeout(next, 100);
-      }
-    }
-    next();
-  } else {
-    // Web Speech fallback
-    _wsSpeak(text, lang, onDone);
-  }
-}
-
-// Web Speech API som fallback
-var _wsVoiceDa = null, _wsVoiceEn = null;
-if(window.speechSynthesis){
-  function _wsLoad(){
-    var vs = window.speechSynthesis.getVoices();
-    if(!vs.length) return;
-    _wsVoiceDa = vs.find(function(v){return /^da/i.test(v.lang);}) || null;
-    _wsVoiceEn = vs.find(function(v){return /^en/i.test(v.lang);}) || null;
-  }
-  window.speechSynthesis.onvoiceschanged = _wsLoad;
-  _wsLoad(); setTimeout(_wsLoad, 500);
-}
-
-function _wsSpeak(text, lang, onDone){
-  if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
-  // Web Speech haandterer lange tekster bedre — split i mindre stykker for sikkerhed
-  var parts = _chunks(text, 200);
+  var parts = _chunks(text, 180);
   var i = 0;
   function next(){
     if(!playing) return;
     if(i >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
-    var u = new SpeechSynthesisUtterance(parts[i++]);
-    u.rate  = SPEEDS[spdI]; u.pitch = 1.0; u.volume = 1.0;
-    var v = lang==="da" ? _wsVoiceDa : _wsVoiceEn;
-    if(v){ u.voice=v; u.lang=v.lang; }
-    else { u.lang = lang==="da" ? "da-DK" : "en-GB"; }
-    u.onend = next;
-    u.onerror = function(){ setTimeout(next, 100); };
-    window.speechSynthesis.speak(u);
+    var audio = new Audio(_gtUrl(parts[i++], lang));
+    audio.playbackRate = SPEEDS[spdI];
+    _curAudio = audio;
+    audio.onended = next;
+    audio.onerror = function(){
+      // Fallback til Web Speech hvis Google TTS fejler (fx offline)
+      _wsFallback(parts.slice(i-1).join(" "), lang, onDone);
+    };
+    audio.play().catch(function(){
+      _wsFallback(parts.slice(i-1).join(" "), lang, onDone);
+    });
   }
-  window.speechSynthesis.cancel();
   next();
 }
 
 function stopSpeech(){
-  if(typeof responsiveVoice !== "undefined"){ try{ responsiveVoice.cancel(); }catch(e){} }
+  if(_curAudio){ try{ _curAudio.pause(); _curAudio.src=""; }catch(e){} _curAudio=null; }
   if(window.speechSynthesis){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+}
+
+// Web Speech fallback (bruges kun hvis Google TTS ikke svarer)
+var _wsVoice = { da: null, en: null };
+if(window.speechSynthesis){
+  function _wsLoad(){
+    var vs = window.speechSynthesis.getVoices(); if(!vs.length) return;
+    _wsVoice.da = vs.find(function(v){ return /^da/i.test(v.lang); }) || null;
+    _wsVoice.en = vs.find(function(v){ return /^en-GB/i.test(v.lang); })
+               || vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
+  }
+  window.speechSynthesis.onvoiceschanged = _wsLoad;
+  _wsLoad(); setTimeout(_wsLoad, 500);
+}
+function _wsFallback(text, lang, onDone){
+  if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
+  var u = new SpeechSynthesisUtterance(text);
+  var v = _wsVoice[lang];
+  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang=lang==="da"?"da-DK":"en-GB"; }
+  u.rate=SPEEDS[spdI]; u.pitch=1.0;
+  u.onend=function(){ if(onDone) setTimeout(onDone,100); };
+  u.onerror=function(){ if(onDone) setTimeout(onDone,100); };
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
 }
 </script>
 
@@ -268,7 +232,7 @@ function stopSpeech(){
      APP LOGIK
      ═══════════════════════════════════════ -->
 <script>
-var TS="1778100809",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+var TS="1778223406",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
 var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null;
 var LBL={
@@ -285,7 +249,7 @@ fetch("./decks.json?v="+TS)
     META=d.decks||[];
     var tot=META.reduce(function(a,x){return a+x.n;},0);
     G("pdot").style.background="var(--g)";
-    G("ptxt").textContent=tot+" kort klar";
+    G("ptxt").textContent=tot+" kort klar — Google TTS";
     setTimeout(_initRV, 200);
     renderDecks();
     preload();
