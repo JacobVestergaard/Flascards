@@ -166,83 +166,125 @@ input[type=range]{flex:1;height:2px;cursor:pointer;border-radius:2px}
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     TTS via Google Translate Audio (agte Google-stemme)
-     Primær: translate.googleapis.com — virker paa alle platforme
-     Fallback: Web Speech API — virker offline
+     TTS — Web Speech API (primær) + Google Translate (fallback)
      ═══════════════════════════════════════════════════════════ -->
 <script>
-var _curAudio = null;
+// ── Stemme-indlaesning ───────────────────────────────────────────
+var _voices = {da: null, en: null};
 
-// Opdel tekst i bidder paa max 180 tegn ved ordgraenser
-function _chunks(text, maxLen){
-  text = text.trim();
-  if(text.length <= maxLen) return [text];
-  var out = [], words = text.split(/\s+/), cur = "";
-  for(var i=0; i<words.length; i++){
-    var candidate = cur ? cur+" "+words[i] : words[i];
-    if(candidate.length > maxLen){ if(cur) out.push(cur); cur = words[i]; }
+function _loadVoices(){
+  if(!window.speechSynthesis) return;
+  var vs = window.speechSynthesis.getVoices();
+  if(!vs.length) return;
+  _voices.da = vs.find(function(v){ return /^da/i.test(v.lang); }) || null;
+  _voices.en = vs.find(function(v){ return /^en-GB/i.test(v.lang); })
+            || vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
+}
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = _loadVoices;
+  _loadVoices();
+  setTimeout(_loadVoices, 300);
+  setTimeout(_loadVoices, 1000);
+  setTimeout(_loadVoices, 2500);
+}
+
+// ── Hjælper: beregn forventet taletid i ms ───────────────────────
+function _estMs(text){
+  var words = text.trim().split(/\s+/).length;
+  return Math.max(1500, Math.round(words / (130 * SPEEDS[spdI]) * 60000));
+}
+
+// ── Stop al lyd ─────────────────────────────────────────────────
+function stopSpeech(){
+  if(window.speechSynthesis){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+  if(window._ttsAudio){ try{ window._ttsAudio.pause(); window._ttsAudio.src=""; }catch(e){} window._ttsAudio=null; }
+}
+
+// ── Hoved TTS ───────────────────────────────────────────────────
+// Forsøg 1: Web Speech API (ingen netvaerk, ingen CORS)
+// Forsøg 2: Google Translate audio
+// Sikkerhed: safety-timer saa kortsekvensen aldrig haenger
+function doSpeak(text, lang, onDone){
+  if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 100); return; }
+
+  var ms = _estMs(text);
+  var done = false;
+  function finish(){
+    if(done) return; done = true;
+    if(onDone) setTimeout(onDone, 200);
+  }
+
+  if(window.speechSynthesis){
+    _loadVoices();
+    window.speechSynthesis.cancel();
+
+    var u = new SpeechSynthesisUtterance(text);
+    var v = _voices[lang];
+    if(v){ u.voice = v; u.lang = v.lang; }
+    else { u.lang = (lang === "da") ? "da-DK" : "en-GB"; }
+    u.rate = SPEEDS[spdI];
+    u.pitch = 1.0;
+
+    // Safety-timer: gaar videre hvis talen tager for lang tid / haenger
+    var safety = setTimeout(function(){
+      if(done) return;
+      window.speechSynthesis.cancel();
+      finish();
+    }, ms + 4000);
+
+    u.onend = function(){ clearTimeout(safety); finish(); };
+    u.onerror = function(){
+      clearTimeout(safety);
+      if(done) return;
+      // Web Speech fejlede — prøv Google Translate audio
+      _googleTTS(text, lang, ms, finish);
+    };
+
+    window.speechSynthesis.speak(u);
+
+    // iOS Safari bug: synthesis kan gaa i staa — resume hvis den holder pause
+    setTimeout(function(){
+      if(done) return;
+      try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
+    }, 500);
+    setTimeout(function(){
+      if(done) return;
+      try{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }catch(e){}
+    }, 2000);
+    return;
+  }
+
+  // Ingen Web Speech i dette browser — gaa direkte til Google TTS
+  _googleTTS(text, lang, ms, finish);
+}
+
+// ── Google Translate audio (opdelt i bidder pga. 200-tegn graense) ──
+function _googleTTS(text, lang, ms, finish){
+  var words = text.trim().split(/\s+/);
+  var parts = [], cur = "";
+  for(var i = 0; i < words.length; i++){
+    var candidate = cur ? cur + " " + words[i] : words[i];
+    if(candidate.length > 180){ if(cur) parts.push(cur); cur = words[i]; }
     else cur = candidate;
   }
-  if(cur) out.push(cur);
-  return out;
-}
+  if(cur) parts.push(cur);
 
-function _gtUrl(text, lang){
-  return "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl="
-    + (lang==="da" ? "da" : "en")
-    + "&q=" + encodeURIComponent(text);
-}
+  var pi = 0;
+  var safety = setTimeout(finish, ms + 4000);
 
-// Hoved TTS — Google Translate Audio
-function doSpeak(text, lang, onDone){
-  if(!text || !text.trim()){ if(onDone) setTimeout(onDone, 80); return; }
-  var parts = _chunks(text, 180);
-  var i = 0;
-  function next(){
-    if(!playing) return;
-    if(i >= parts.length){ if(onDone) setTimeout(onDone, 100); return; }
-    var audio = new Audio(_gtUrl(parts[i++], lang));
+  function nextPart(){
+    if(pi >= parts.length){ clearTimeout(safety); finish(); return; }
+    var tl = (lang === "da") ? "da" : "en";
+    var url = "https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl="
+              + tl + "&q=" + encodeURIComponent(parts[pi++]);
+    var audio = new Audio(url);
     audio.playbackRate = SPEEDS[spdI];
-    _curAudio = audio;
-    audio.onended = next;
-    audio.onerror = function(){
-      // Fallback til Web Speech hvis Google TTS fejler (fx offline)
-      _wsFallback(parts.slice(i-1).join(" "), lang, onDone);
-    };
-    audio.play().catch(function(){
-      _wsFallback(parts.slice(i-1).join(" "), lang, onDone);
-    });
+    window._ttsAudio = audio;
+    audio.onended = nextPart;
+    audio.onerror = function(){ clearTimeout(safety); finish(); };
+    audio.play().catch(function(){ clearTimeout(safety); finish(); });
   }
-  next();
-}
-
-function stopSpeech(){
-  if(_curAudio){ try{ _curAudio.pause(); _curAudio.src=""; }catch(e){} _curAudio=null; }
-  if(window.speechSynthesis){ try{ window.speechSynthesis.cancel(); }catch(e){} }
-}
-
-// Web Speech fallback (bruges kun hvis Google TTS ikke svarer)
-var _wsVoice = { da: null, en: null };
-if(window.speechSynthesis){
-  function _wsLoad(){
-    var vs = window.speechSynthesis.getVoices(); if(!vs.length) return;
-    _wsVoice.da = vs.find(function(v){ return /^da/i.test(v.lang); }) || null;
-    _wsVoice.en = vs.find(function(v){ return /^en-GB/i.test(v.lang); })
-               || vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
-  }
-  window.speechSynthesis.onvoiceschanged = _wsLoad;
-  _wsLoad(); setTimeout(_wsLoad, 500);
-}
-function _wsFallback(text, lang, onDone){
-  if(!window.speechSynthesis){ if(onDone) setTimeout(onDone, 500); return; }
-  var u = new SpeechSynthesisUtterance(text);
-  var v = _wsVoice[lang];
-  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang=lang==="da"?"da-DK":"en-GB"; }
-  u.rate=SPEEDS[spdI]; u.pitch=1.0;
-  u.onend=function(){ if(onDone) setTimeout(onDone,100); };
-  u.onerror=function(){ if(onDone) setTimeout(onDone,100); };
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  nextPart();
 }
 </script>
 
@@ -250,7 +292,7 @@ function _wsFallback(text, lang, onDone){
      APP LOGIK
      ═══════════════════════════════════════ -->
 <script>
-var TS="1778511676",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
+var TS="1778516451",LANG="da",SPEEDS=[0.8,1.0,1.2,1.5],spdI=1,PAUSE1=3,PAUSE2=4;
 var SRS_BASE=7,SRS_FACTOR=2.0,SRS_REPS=3,SRS_JITTER=2;
 var META=[],CACHE={},sel=new Set(),queue=[],qIdx=0,curItem=null,playing=false,seqTmr=null;
 var FICONS={"dannelse":"📖","skills":"⭐","uni":"🎓","private":"💰","economy":"💰","psych":"🧠","science":"🔬","history":"📜","language":"💬","math":"🔢","music":"🎵","sport":"🏃","tech":"💻"};
